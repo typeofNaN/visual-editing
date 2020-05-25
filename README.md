@@ -1,5 +1,7 @@
 # Visual Editing
 
+Visual Editing using @vue/cli3 and typescript build
+
 ## Project setup
 ```
 yarn install

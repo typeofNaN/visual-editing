@@ -29,57 +29,51 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 import IScroll from 'iscroll'
 
-export default {
-  name: 'ScrollLeft',
-  props: {
-    component: {
-      type: Object
-    }
-  },
-  data () {
-    return {
-      noScroll: null,
-      scrolls: this.component.action.config
-    }
-  },
-  computed: {
-    getStyle () {
-      const ret = []
-      this.component.style.forEach((item) => {
-        const unit = item.unit || ''
-        item.val && ret.push(item.attr + ':' + item.val + unit)
-      })
-      return ret.join(';')
-    }
-  },
-  watch: {
-    component: {
-      handler () {
-        this.scrolls = this.component.action.config
-        // 每改变项都需要重新初始化iscroll对象
-        this.initScroll()
-      },
-      deep: true
-    }
-  },
-  mounted () {
+@Component({
+  name: 'ScrollLeft'
+})
+export default class ScrollLeft extends Vue {
+  @Prop({ default: null })
+  private component: any
+
+  private noScroll: any = null
+  private scrolls: Array<any> = this.component.action.config
+
+
+  private get getStyle (): string {
+    const ret: Array<string> = []
+    this.component.style.forEach((item: any) => {
+      const unit: string = item.unit || ''
+      item.val && ret.push(item.attr + ':' + item.val + unit)
+    })
+    return ret.join(';')
+  }
+
+  @Watch('component', { deep: true })
+  private watchComponent (): void {
+    this.scrolls = this.component.action.config
+    // 每改变项都需要重新初始化iscroll对象
     this.initScroll()
-  },
-  methods: {
-    initScroll () {
-      this.noScroll = null
-      setTimeout(() => {
-        this.noScroll = new IScroll('#scroll', {
-          scrollX: true,
-          scrollY: false,
-          eventPassthrough: true,
-          preventDefault: false
-        })
-      }, 0)
-    }
+  }
+
+  private mounted (): void {
+    this.initScroll()
+  }
+
+  private initScroll (): void {
+    this.noScroll = null
+    setTimeout(() => {
+      this.noScroll = new IScroll('#scroll', {
+        scrollX: true,
+        scrollY: false,
+        eventPassthrough: true,
+        preventDefault: false
+      })
+    }, 0)
   }
 }
 </script>

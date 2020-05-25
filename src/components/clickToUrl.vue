@@ -141,105 +141,108 @@
   </el-dialog>
 </template>
 
-<script>
-export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    option: {
-      type: Object,
-      default: null
-    },
-    tabs: {
-      type: Array,
-      default: null
-    },
-    index: {
-      type: Number,
-      default: null
-    },
-    comps: {
-      type: Array,
-      default: null
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
+@Component({
+  name: 'ClickToUrl'
+})
+export default class ClickToUrl extends Vue {
+  @Prop({ default: false })
+  private show?: Boolean
+
+  @Prop({ default: null })
+  private option: any
+
+  @Prop({ default: null })
+  private tabs?: Array<any>
+
+  @Prop({ default: null })
+  private index!: number
+
+  @Prop({ default: null })
+  private coms?: Array<any>
+
+  $evt: any
+  private dialogShow: Boolean = this.show || false
+  private config: any = this.option
+  private showTabs: Array<any> = this.tabs || []
+  private currentTab: string = this.getCurrentTab()
+  private returnVal: any = this.getOldVal()
+  private outsideVal: string = this.getVal('outside')
+  private pageVal: string = this.getVal('page')
+  private telVal: string = this.getVal('tel')
+  private codeVal: string = ''
+
+  @Watch('option')
+  private watchOption (): void {
+    this.config = this.option
+  }
+
+  @Watch('tabs')
+  private watchTabs (): void {
+    this.showTabs = this.tabs || []
+  }
+
+  @Watch('show')
+  private watchShow (): void {
+    this.dialogShow = this.show || false
+    if (this.dialogShow) {
+      this.currentTab = this.getCurrentTab()
+      this.outsideVal = this.getVal('outside')
+      this.pageVal = this.getVal('page')
+      this.telVal = this.getVal('tel')
+      this.returnVal = null
     }
-  },
-  data () {
-    return {
-      dialogShow: this.show,
-      config: this.option,
-      showTabs: this.tabs,
-      currentTab: this.getCurrentTab(),
-      returnVal: this.getOldVal(),
-      outsideVal: this.getVal('outside'),
-      pageVal: this.getVal('page'),
-      telVal: this.getVal('tel'),
-      codeVal: ''
-    }
-  },
-  watch: {
-    option () {
-      this.config = this.option
-    },
-    tabs () {
-      this.showTabs = this.tabs
-    },
-    show () {
-      this.dialogShow = this.show
-      if (this.dialogShow) {
-        this.currentTab = this.getCurrentTab()
-        this.outsideVal = this.getVal('outside')
-        this.pageVal = this.getVal('page')
-        this.telVal = this.getVal('tel')
-        this.returnVal = null
+  }
+
+  private getVal (type: any): string {
+    if (this.config && this.config.action && this.config.action.config.length && this.config.action.config[this.index].click) {
+      if (this.config.action.config[this.index].click.type === type) {
+        return this.config.action.config[this.index].click.href
       }
     }
-  },
-  methods: {
-    getVal (type) {
-      if (this.config && this.config.action && this.config.action.config.length && this.config.action.config[this.index].click) {
-        if (this.config.action.config[this.index].click.type === type) {
-          return this.config.action.config[this.index].click.href
-        }
-      }
-      return ''
-    },
-    getOldVal () {
-      return this.config && this.config.action.config && this.config.action.config.length ? this.config.action.config[this.index].click : null
-    },
-    getCurrentTab () {
-      if (this.showTabs && this.showTabs.length === 1) {
-        return this.showTabs[0]
-      }
-      return this.config && this.config.action.config && this.config.action.config.length && this.config.action.config[this.index].click ? this.config.action.config[this.index].click.type : 'outside'
-    },
-    setPageAction (id) {
-      this.pageVal = id
+    return ''
+  }
+
+  private getOldVal (): any {
+    return this.config && this.config.action.config && this.config.action.config.length ? this.config.action.config[this.index].click : null
+  }
+
+  private getCurrentTab (): string {
+    if (this.showTabs && this.showTabs.length === 1) {
+      return this.showTabs[0]
+    }
+    return this.config && this.config.action.config && this.config.action.config.length && this.config.action.config[this.index].click ? this.config.action.config[this.index].click.type : 'outside'
+  }
+
+  private setPageAction (id: any): void {
+    this.pageVal = id
+    this.returnVal = {
+      type: 'page',
+      href: id
+    }
+  }
+
+  private clickTab (tab: any) {
+    this.currentTab = tab.name
+  }
+
+  private sure (): void {
+    this.dialogShow = false
+    if (this.currentTab === 'outside' && this.outsideVal) {
       this.returnVal = {
-        type: 'page',
-        href: id
+        type: 'outside',
+        href: this.outsideVal
       }
-    },
-    clickTab (tab) {
-      this.currentTab = tab.name
-    },
-    sure () {
-      this.dialogShow = false
-      if (this.currentTab === 'outside' && this.outsideVal) {
-        this.returnVal = {
-          type: 'outside',
-          href: this.outsideVal
-        }
-      }
-      if (this.currentTab === 'tel' && this.telVal) {
-        this.returnVal = {
-          type: 'tel',
-          href: this.telVal
-        }
-      }
-      this.$evt.$emit('click:submit', this.index, this.returnVal)
     }
+    if (this.currentTab === 'tel' && this.telVal) {
+      this.returnVal = {
+        type: 'tel',
+        href: this.telVal
+      }
+    }
+    this.$evt.$emit('click:submit', this.index, this.returnVal)
   }
 }
 </script>

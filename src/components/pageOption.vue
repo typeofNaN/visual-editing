@@ -36,20 +36,20 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+
 import formItem from './formItem.vue'
 
-export default {
+@Component({
   name: 'AppPageOption',
   components: {
     formItem
-  },
-  props: {
-    option: {
-      type: Object,
-      default: null
-    }
   }
+})
+export default class AppPageOption extends Vue {
+  @Prop({ default: null })
+  private option: any
 }
 </script>
 

@@ -38,22 +38,27 @@
   </el-row>
 </template>
 
-<script>
-export default {
-  name: 'AppToolbar',
-  methods: {
-    showPageSet () {
-      this.$emit('showPageSet')
-    },
-    showPreview () {
-      this.$emit('showPreview')
-    },
-    saveAll () {
-      this.$emit('savePageSet')
-    },
-    reset () {
-      this.$emit('reset')
-    }
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+
+@Component({
+  name: 'AppToolbar'
+})
+export default class AppToolbar extends Vue {
+  private showPageSet (): void {
+    this.$emit('showPageSet')
+  }
+
+  private showPreview (): void {
+    this.$emit('showPreview')
+  }
+
+  private saveAll (): void {
+    this.$emit('savePageSet')
+  }
+
+  private reset (): void {
+    this.$emit('reset')
   }
 }
 </script>

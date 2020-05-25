@@ -27,63 +27,56 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'SwiperBanner',
-  props: {
-    component: {
-      type: Object,
-      default: null
-    }
-  },
-  data () {
-    return {
-      banners: this.component.action.config,
-      autoplay: this.component.base[0].val,
-      pagination: this.component.base[1].val,
-      interval: this.component.base[2].val,
-      height: this.getMaxHeight(),
-      width: this.getWidth()
-    }
-  },
-  computed: {
-    getStyle () {
-      const ret = []
-      this.component.style.forEach((item) => {
-        const unit = item.unit || ''
-        item.val && ret.push(item.attr + ':' + item.val + unit)
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
+@Component({
+  name: 'SwiperBanner'
+})
+export default class SwiperBanner extends Vue {
+  @Prop({ default: null })
+  private component: any
+
+  private banners: Array<any> = this.component.action.config
+  private autoplay: Boolean = this.component.base[0].val
+  private pagination: Boolean = this.component.base[1].val
+  private interval: number = this.component.base[2].val
+  private height: string = this.getMaxHeight()
+  private width: string = this.getWidth()
+
+  private get getStyle (): string {
+    const ret: Array<string> = []
+    this.component.style.forEach((item: any) => {
+      const unit: string = item.unit || ''
+      item.val && ret.push(item.attr + ':' + item.val + unit)
+    })
+    return ret.join(';')
+  }
+
+  @Watch('component', { deep: true })
+  private watchComponent (): void {
+    this.banners = this.component.action.config
+    this.autoplay = this.component.base[0].val
+    this.pagination = this.component.base[1].val
+    this.interval = this.component.base[2].val
+    this.height = this.getMaxHeight()
+    this.width = this.getWidth()
+  }
+
+  private getMaxHeight (): string {
+    let h:number = 0
+    if (this.component.action.config && this.component.action.config.length) {
+      this.component.action.config.forEach((item: any) => {
+        if (item.height && item.height > h) {
+          h = item.height
+        }
       })
-      return ret.join(';')
     }
-  },
-  watch: {
-    component: {
-      handler () {
-        this.banners = this.component.action.config
-        this.autoplay = this.component.base[0].val
-        this.pagination = this.component.base[1].val
-        this.interval = this.component.base[2].val
-        this.height = this.getMaxHeight()
-        this.width = this.getWidth()
-      },
-      deep: true
-    }
-  },
-  methods: {
-    getMaxHeight () {
-      let h = 0
-      if (this.component.action.config && this.component.action.config.length) {
-        this.component.action.config.forEach((item) => {
-          if (item.height && item.height > h) {
-            h = item.height
-          }
-        })
-      }
-      return h > 0 ? h / 2 + 'px' : '112px'
-    },
-    getWidth () {
-      return (750 - this.component.style[2].val - this.component.style[4].val) / 2 + 'px'
-    }
+    return h > 0 ? h / 2 + 'px' : '112px'
+  }
+
+  private getWidth (): string {
+    return (750 - this.component.style[2].val - this.component.style[4].val) / 2 + 'px'
   }
 }
 </script>

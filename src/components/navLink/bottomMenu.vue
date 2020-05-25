@@ -21,39 +21,32 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'BottomMenu',
-  props: {
-    component: {
-      type: Object,
-      default: null
-    }
-  },
-  data () {
-    return {
-      menus: this.component.action.config
-    }
-  },
-  watch: {
-    component: {
-      handler () {
-        this.menus = this.component.action.config
-      },
-      deep: true
-    }
-  },
-  computed: {
-    getStyle () {
-      const ret = []
-      this.component.style.forEach((item) => {
-        if (item.val) {
-          const unit = item.unit || ''
-          ret.push(item.attr + ':' + item.val + unit)
-        }
-      })
-      return ret.join(';')
-    }
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
+@Component({
+  name: 'BottomMenu'
+})
+export default class BottomMenu extends Vue {
+  @Prop({ default: null })
+  private component: any
+
+  private menus: any = this.component.action.config
+
+  @Watch('component', { deep: true })
+  private watchComponent(): void {
+    this.menus = this.component.action.config
+  }
+
+  private get getStyle (): string {
+    const ret: Array<string> = []
+    this.component.style.forEach((item: any) => {
+      if (item.val) {
+        const unit: string = item.unit || ''
+        ret.push(item.attr + ':' + item.val + unit)
+      }
+    })
+    return ret.join(';')
   }
 }
 </script>

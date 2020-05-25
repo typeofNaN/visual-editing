@@ -68,54 +68,53 @@
   </div>
 </template>
 
-<script>
-import util from '@/utils/tools'
-import compConfig from '@/config/comp.config.ts'
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 
-export default {
-  data () {
-    return {
-      defaultConf: util.copyObj(compConfig['news-marquee']),
-      items: this.marquees
-    }
-  },
-  props: {
-    marquees: {
-      type: Array,
-      default: null
-    }
-  },
-  watch: {
-    marquees: {
-      handler (val) {
-        this.items = val
-      },
-      deep: true
-    }
-  },
-  methods: {
-    showClick (banner, idx) {
-      this.$evt.$emit('click:show', idx)
-    },
-    upItem (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx - 1, 0, tmp)
-    },
-    downItem (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx + 1, 0, tmp)
-    },
-    delItem (idx) {
-      this.items.splice(idx, 1)
-    },
-    addItem () {
-      if (this.items.length < 10) {
-        this.items.push(util.copyObj(this.defaultConf.action.config[0]))
-      } else {
-        this.$alert('最多添加10个滚动项！')
-      }
+import util from '@/utils/tools'
+import compConfig from '@/config/comp.config'
+
+@Component({
+  name: 'MarqueeItem'
+})
+export default class MarqueeItem extends Vue {
+  @Prop({ default: null })
+  private marquees?: Array<any>
+
+  $evt: any
+  private defaultConf: any = util.copyObj(compConfig['news-marquee'])
+  private items: Array<any> = this.marquees || []
+
+  @Watch('marquees', { deep: true })
+  private watchMarquees (val: Array<any>) {
+    this.items = val
+  }
+
+  private showClick (banner: any, idx: number): void {
+    this.$evt.$emit('click:show', idx)
+  }
+
+  private upItem (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx - 1, 0, tmp)
+  }
+
+  private downItem (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx + 1, 0, tmp)
+  }
+
+  private delItem (idx: number): void {
+    this.items.splice(idx, 1)
+  }
+
+  private addItem (): void {
+    if (this.items.length < 10) {
+      this.items.push(util.copyObj(this.defaultConf.action.config[0]))
+    } else {
+      this.$alert('最多添加10个滚动项！')
     }
   }
 }

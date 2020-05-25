@@ -62,63 +62,62 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
 import util from '@/utils/tools'
-import compConfig from '@/config/comp.config.ts'
+import compConfig from '@/config/comp.config'
 import upload from '@/components/upload.vue'
 
-export default {
-  data () {
-    return {
-      defaultConf: util.copyObj(compConfig['swiper-banner']),
-      slides: this.banners
-    }
-  },
+@Component({
+  name: 'BannerItem',
   components: {
     upload
-  },
-  props: {
-    banners: {
-      type: Array,
-      default: null
+  }
+})
+export default class BannerItem extends Vue {
+  @Prop({ default: null })
+  private banners?: Array<any>
+
+  $evt: any
+  private defaultConf: any = util.copyObj(compConfig['swiper-banner'])
+  private slides: Array<any> = this.banners || []
+
+  @Watch('banners', { deep: true })
+  private watchBanners (val: Array<any>): void {
+    this.slides = val
+  }
+
+  private showClick (banner: any, idx: number): void {
+    this.$evt.$emit('click:show', idx, ['outside', 'code'])
+  }
+
+  private upBanner (idx: number): void {
+    const tmp: any = util.copyObj(this.slides[idx])
+    this.slides.splice(idx, 1)
+    this.slides.splice(idx - 1, 0, tmp)
+  }
+
+  private downBanner (idx: number): void {
+    const tmp: any = util.copyObj(this.slides[idx])
+    this.slides.splice(idx, 1)
+    this.slides.splice(idx + 1, 0, tmp)
+  }
+
+  private delBanner (idx: number): void {
+    this.slides.splice(idx, 1)
+  }
+
+  private addBanner (): void {
+    if (this.slides.length < 10) {
+      this.slides.push(util.copyObj(this.defaultConf.action.config[0]))
+    } else {
+      this.$alert('最多添加10个图片项！')
     }
-  },
-  watch: {
-    banners: {
-      handler (val) {
-        this.slides = val
-      },
-      deep: true
-    }
-  },
-  methods: {
-    showClick (banner, idx) {
-      // 轮播图只可配置外链
-      this.$evt.$emit('click:show', idx, ['outside', 'code'])
-    },
-    upBanner (idx) {
-      const tmp = util.copyObj(this.slides[idx])
-      this.slides.splice(idx, 1)
-      this.slides.splice(idx - 1, 0, tmp)
-    },
-    downBanner (idx) {
-      const tmp = util.copyObj(this.slides[idx])
-      this.slides.splice(idx, 1)
-      this.slides.splice(idx + 1, 0, tmp)
-    },
-    delBanner (idx) {
-      this.slides.splice(idx, 1)
-    },
-    addBanner () {
-      if (this.slides.length < 10) {
-        this.slides.push(util.copyObj(this.defaultConf.action.config[0]))
-      } else {
-        this.$alert('最多添加10个图片项！')
-      }
-    },
-    uploadSuccess (item, img, idx) {
-      console.log('uploadSuccess', item)
-    }
+  }
+
+  private uploadSuccess (): void {
+    console.log('uploadSuccess')
   }
 }
 </script>

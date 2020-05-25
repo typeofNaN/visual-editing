@@ -40,21 +40,31 @@
   </div>
 </template>
 
-<script>
-// 左侧菜单配置
-import menuConfig from '@/config/menu.config.ts'
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
 
-export default {
-  name: 'AppSide',
-  data () {
-    return {
-      menuData: menuConfig
-    }
-  },
-  methods: {
-    menuDrag (e, key) {
-      e.dataTransfer.setData('cmp-type', key)
-    }
+import menuConfig from '@/config/menu.config'
+
+interface IMenuConfig {
+  title: string,
+  collapse: Boolean,
+  items: Array<IMenuItem>
+}
+
+interface IMenuItem {
+  key: string,
+  text: string,
+  icon: string
+}
+
+@Component({
+  name: 'AppSide'
+})
+export default class AppSide extends Vue {
+  private menuData: Array<IMenuConfig> = menuConfig
+
+  private menuDrag (e: any, key: string) {
+    e.dataTransfer.setData('cmp-type', key)
   }
 }
 </script>

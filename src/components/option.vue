@@ -136,7 +136,9 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+
 import formItem from './formItem.vue'
 
 import imageClick from '@/components/itemOption/imageClick.vue'
@@ -162,16 +164,8 @@ import scrollItem from '@/components/itemOption/scrollItem.vue'
 import horizontalItem from '@/components/itemOption/horizontalItem.vue'
 import verticalItem from '@/components/itemOption/verticalItem.vue'
 
-import marqueeItem from '@/components/itemOption/marqueeItem.vue'
-
-export default {
+@Component({
   name: 'AppOption',
-  data () {
-    return {
-      imageClickShow: false,
-      timeoutClickShow: false
-    }
-  },
   components: {
     formItem,
     imageClick,
@@ -190,15 +184,16 @@ export default {
     bannerItem,
     scrollItem,
     horizontalItem,
-    verticalItem,
-    marqueeItem
-  },
-  props: {
-    option: {
-      type: Object,
-      default: null
-    }
+    verticalItem
   }
+})
+export default class AppOption extends Vue {
+  @Prop({ default: null })
+  private option: any
+
+  private imageClickShow: Boolean = false
+  private timeoutClickShow: Boolean = false
+
 }
 </script>
 

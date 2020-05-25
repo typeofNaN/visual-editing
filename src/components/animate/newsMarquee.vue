@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 
-import Marquee from '@/utils/newsMarquee.js'
+// import Marquee from '@/utils/newsMarquee'
 
 interface option {
   successive: Boolean,
@@ -62,21 +62,21 @@ export default class NewsMarquee extends Vue {
     return ret.join(';')
   }
 
-  @Watch('component', { deep: true })
-  private watchComponent (): void {
-    this.marquees = this.component.action.config
-    this.marqueeOption.successive = this.component.style[0].val
-    // 需要重新初始化marquee对象
-    if (this.marquee) {
-      this.marquee.destroy()
-      this.marquee = null
-    }
-    this.marquee = new Marquee('#line-marquee', this.marqueeOption)
-  }
+  // @Watch('component', { deep: true })
+  // private watchComponent (): void {
+  //   this.marquees = this.component.action.config
+  //   this.marqueeOption.successive = this.component.style[0].val
+  //   // 需要重新初始化marquee对象
+  //   if (this.marquee) {
+  //     this.marquee.destroy()
+  //     this.marquee = null
+  //   }
+  //   this.marquee = new Marquee('#line-marquee', this.marqueeOption)
+  // }
 
-  private mounted (): void {
-    this.marquee = new Marquee('#line-marquee', this.marqueeOption)
-  }
+  // private mounted (): void {
+  //   this.marquee = new Marquee('#line-marquee', this.marqueeOption)
+  // }
 }
 </script>
 

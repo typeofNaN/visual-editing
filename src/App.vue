@@ -226,12 +226,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+
 import util from '@/utils/tools'
 // 页面默认配置
-import pageOption from '@/config/page.config.ts'
+import pageOption from '@/config/page.config'
 // 组件默认配置
-import compConfig from '@/config/comp.config.ts'
+import compConfig from '@/config/comp.config'
 
 import AppSidebar from '@/components/slidebar.vue'
 import AppToolbar from '@/components/toolbar.vue'
@@ -241,8 +243,8 @@ import appPageOpt from '@/components/pageOption.vue'
 import clickConfig from '@/components/clickToUrl.vue'
 import previewDialog from '@/components/preview.vue'
 
-export default {
-  name: 'h5Setting',
+@Component({
+  name: 'App',
   components: {
     AppSidebar,
     AppToolbar,
@@ -250,32 +252,32 @@ export default {
     appPageOpt,
     clickConfig,
     previewDialog
-  },
-  data () {
-    return {
-      clickShow: false,
-      previewShow: false,
-      click: {
-        index: 0,
-        tabs: []
-      },
-      compList: [{
-        type: 'placeholder'
-      }],
-      bottomMenu: null,
-      pageConfig: JSON.parse(localStorage.getItem('pageConfig')) || util.copyObj(pageOption),
-      currentIndex: -1,
-      currentConfig: null
-    }
-  },
-  mounted () {
-    this.$evt.$on('click:show', (idx, tabs) => {
+  }
+})
+export default class App extends Vue {
+  $evt: any
+  private clickShow: Boolean = false
+  private previewShow: Boolean = false
+  private click: any = {
+    index: 0,
+    tabs: []
+  }
+  private compList: Array<any> = [{
+    type: 'placeholder'
+  }]
+  private bottomMenu: any = null
+  private pageConfig: any = JSON.parse(localStorage.getItem('pageConfig') as string) || util.copyObj(pageOption)
+  private currentIndex: number = -1
+  private currentConfig: any = null
+
+  private mounted (): void {
+    this.$evt.$on('click:show', (idx: number, tabs: any) => {
       this.click.index = idx
       if (Array.isArray(tabs) && tabs.length) this.click.tabs = tabs
       else this.click.tabs = ['outside', 'page', 'tel']
       this.clickShow = true
     })
-    this.$evt.$on('click:submit', (idx, config) => {
+    this.$evt.$on('click:submit', (idx: number, config: any) => {
       if (idx > -1 && config) {
         if (this.currentIndex >= 0) {
           this.compList[this.currentIndex].action.config[idx].click = config
@@ -287,233 +289,249 @@ export default {
     })
     this.readLocalData()
     this.showPageSet()
-  },
-  watch: {
-    compList: {
-      handler (val) {
-        if (val && val.length > 1) {
-          localStorage.setItem('pageDateSet', JSON.stringify({
-            time: Date.now(),
-            menu: this.bottomMenu,
-            config: val
-          }))
-        }
-      },
-      deep: true
-    },
-    bottomMenu: {
-      handler (val) {
-        localStorage.setItem('pageDateSet', JSON.stringify({
-          time: Date.now(),
-          menu: val,
-          config: this.compList
-        }))
-      },
-      deep: true
+  }
+
+  @Watch('compList', { deep: true })
+  private watchCompList (val: Array<any>): void {
+    if (val && val.length > 1) {
+      localStorage.setItem('pageDateSet', JSON.stringify({
+        time: Date.now(),
+        menu: this.bottomMenu,
+        config: val
+      }))
     }
-  },
-  methods: {
-    showPageSet () {
-      this.resetCompUnchecked()
-      this.currentIndex = -1
-      this.currentConfig = null
-    },
-    savePageSet () {
-      console.warn('save Info: ', JSON.stringify(this.compList))
-      this.$message({
-        message: '打开chomre devtool查看保存的信息！',
-        type: 'success'
-      })
-    },
-    showPreview () {
-      localStorage.setItem('pageConfig', JSON.stringify(this.pageConfig))
-      this.previewShow = true
-    },
-    reset () {
-      this.$confirm('确定要重置此页面吗，不可撤回？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+  }
+
+  @Watch('bottomMenu', { deep: true })
+  private watchBottomMenu (val: Array<any>): void {
+    localStorage.setItem('pageDateSet', JSON.stringify({
+      time: Date.now(),
+      menu: val,
+      config: this.compList
+    }))
+  }
+
+  private showPageSet (): void {
+    this.resetCompUnchecked()
+    this.currentIndex = -1
+    this.currentConfig = null
+  }
+
+  private savePageSet (): void {
+    console.warn('save Info: ', JSON.stringify(this.compList))
+    this.$message({
+      message: '打开chomre devtool查看保存的信息！',
+      type: 'success'
+    })
+  }
+
+  private showPreview (): void {
+    localStorage.setItem('pageConfig', JSON.stringify(this.pageConfig))
+    this.previewShow = true
+  }
+
+  private reset (): void {
+    this.$confirm('确定要重置此页面吗，不可撤回？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+      center: true
+    }).then(() => {
+      localStorage.setItem('pageDateSet', '')
+      this.compList = [{ type: 'placeholder' }]
+    }).catch(() => {})
+  }
+
+  private readLocalData (): void {
+    const tmp: string | null = localStorage.getItem('pageDateSet')
+    if (tmp) {
+      const localData = JSON.parse(tmp)
+      const t = util.parseTime(localData.time)
+      this.$confirm('您有一份【' + t + '】未保存的编辑内容, 是否恢复到当前编辑界面？', '提示', {
+        confirmButtonText: '载入',
+        cancelButtonText: '丢弃',
         type: 'warning',
         center: true
       }).then(() => {
-        localStorage.setItem('pageDateSet', '')
-        this.compList = [{ type: 'placeholder' }]
-      }).catch(() => {})
-    },
-    readLocalData () {
-      const tmp = localStorage.getItem('pageDateSet')
-      if (tmp) {
-        const localData = JSON.parse(tmp)
-        const t = util.parseTime(localData.time)
-        this.$confirm('您有一份【' + t + '】未保存的编辑内容, 是否恢复到当前编辑界面？', '提示', {
-          confirmButtonText: '载入',
-          cancelButtonText: '丢弃',
-          type: 'warning',
-          center: true
-        }).then(() => {
-          this.compList = localData.config
-          this.bottomMenu = localData.menu
-          this.resetCompUnchecked()
-        }).catch(() => {
-          localStorage.setItem('pageDateSet', '')
-        })
-      }
-    },
-    resetCompUnchecked () {
-      if (this.bottomMenu) this.bottomMenu.active = false
-      this.compList.forEach((val) => {
-        if (val.active) {
-          val.active = false
-        }
-      })
-    },
-    replacePlaceholderWithComp (index, key) {
-      const comp = util.copyObj(compConfig[key])
-      const config = {
-        type: key,
-        active: true,
-        domId: key + '-' + util.createDomID()
-      }
-      Object.assign(comp, config)
-      this.compList.splice(index + 1, 0, comp)
-      // 再插入一个占位控件
-      this.compList.splice(index + 2, 0, {
-        type: 'placeholder'
-      })
-      // 显示配置项
-      this.currentIndex = index + 1
-      this.currentConfig = comp
-    },
-    addBottomMenu () {
-      const comp = util.copyObj(compConfig['bottom-menu'])
-      const config = {
-        type: 'bottom-menu',
-        active: true,
-        domId: 'bottom-menu-' + util.createDomID()
-      }
-      Object.assign(comp, config)
-      this.bottomMenu = comp
-      // 显示配置项
-      this.currentIndex = -1
-      this.currentConfig = comp
-    },
-    clickComp (e) {
-      if (this.bottomMenu) this.bottomMenu.active = false
-      const idx = parseInt(e.currentTarget.dataset.index)
-      this.compList.forEach((val, index) => {
-        if (index === idx) {
-          val.active = true
-          this.currentIndex = index
-          this.currentConfig = val
-        } else {
-          val.active = false
-        }
-      })
-    },
-    clickBtmMenu (e) {
-      this.resetCompUnchecked()
-      if (this.bottomMenu) this.bottomMenu.active = true
-      this.currentIndex = -2
-      this.currentConfig = this.bottomMenu
-    },
-    delBtmMenu () {
-      this.bottomMenu = null
-      // 显示页面配置参数
-      this.showPageSet()
-    },
-    upComp (idx) {
-      if (idx < 2) {
-        return false
-      }
-      // 复制当前控件
-      const tmp = util.copyObj(this.compList[idx])
-      // 再删除控件+占位坑
-      this.compList.splice(idx, 2)
-      // 再插入控件
-      this.compList.splice(idx - 2, 0, tmp)
-      // 最后插入一个占位控件
-      this.compList.splice(idx - 1, 0, {
-        type: 'placeholder'
-      })
-      // 显示当前组件配置
-      this.currentIndex = idx - 2
-      this.currentConfig = this.compList[idx - 2]
-    },
-    downComp (idx) {
-      if (idx === this.compList.length - 2) {
-        return false
-      }
-      // 复制当前控件
-      const tmp = util.copyObj(this.compList[idx])
-      // 再删除控件+占位坑
-      this.compList.splice(idx, 2)
-      // 再插入控件
-      this.compList.splice(idx + 2, 0, tmp)
-      // 最后插入一个占位控件
-      this.compList.splice(idx + 3, 0, {
-        type: 'placeholder',
-        active: false
-      })
-      // 显示当前组件配置
-      this.currentIndex = idx + 2
-      this.currentConfig = this.compList[idx + 2]
-    },
-    delComp (idx) {
-      // 删除控件
-      this.compList.splice(idx, 2)
-      // 显示页面配置参数
-      this.showPageSet()
-    },
-    dragover (e) {
-      const target = e.target
-      if (!target.classList.contains('active')) target.classList.add('active')
-    },
-    drop (e) {
-      const target = e.target
-      target.classList.remove('active')
-      const key = e.dataTransfer.getData('cmp-type')
-      if (key === 'bottom-menu') return
-      const idx = parseInt(target.dataset.index)
-      if (compConfig[key]) {
+        this.compList = localData.config
+        this.bottomMenu = localData.menu
         this.resetCompUnchecked()
-        this.replacePlaceholderWithComp(idx, key)
+      }).catch(() => {
+        localStorage.setItem('pageDateSet', '')
+      })
+    }
+  }
+
+  private resetCompUnchecked (): void {
+    if (this.bottomMenu) this.bottomMenu.active = false
+    this.compList.forEach((val: any) => {
+      if (val.active) {
+        val.active = false
+      }
+    })
+  }
+
+  private replacePlaceholderWithComp (index: number, key: string): void {
+    const comp = util.copyObj((compConfig as any)[key])
+    const config = {
+      type: key,
+      active: true,
+      domId: key + '-' + util.createDomID()
+    }
+    Object.assign(comp, config)
+    this.compList.splice(index + 1, 0, comp)
+    // 再插入一个占位控件
+    this.compList.splice(index + 2, 0, {
+      type: 'placeholder'
+    })
+    // 显示配置项
+    this.currentIndex = index + 1
+    this.currentConfig = comp
+  }
+
+  private addBottomMenu (): void {
+    const comp = util.copyObj(compConfig['bottom-menu'])
+    const config = {
+      type: 'bottom-menu',
+      active: true,
+      domId: 'bottom-menu-' + util.createDomID()
+    }
+    Object.assign(comp, config)
+    this.bottomMenu = comp
+    // 显示配置项
+    this.currentIndex = -1
+    this.currentConfig = comp
+  }
+
+  private clickComp (e: any): void {
+    if (this.bottomMenu) this.bottomMenu.active = false
+    const idx = parseInt(e.currentTarget.dataset.index)
+    this.compList.forEach((val, index) => {
+      if (index === idx) {
+        val.active = true
+        this.currentIndex = index
+        this.currentConfig = val
+      } else {
+        val.active = false
+      }
+    })
+  }
+
+  private clickBtmMenu (e: any): void {
+    this.resetCompUnchecked()
+    if (this.bottomMenu) this.bottomMenu.active = true
+    this.currentIndex = -2
+    this.currentConfig = this.bottomMenu
+  }
+
+  private delBtmMenu (): void {
+    this.bottomMenu = null
+    // 显示页面配置参数
+    this.showPageSet()
+  }
+
+  private upComp (idx: number): any {
+    if (idx < 2) {
+      return false
+    }
+    // 复制当前控件
+    const tmp = util.copyObj(this.compList[idx])
+    // 再删除控件+占位坑
+    this.compList.splice(idx, 2)
+    // 再插入控件
+    this.compList.splice(idx - 2, 0, tmp)
+    // 最后插入一个占位控件
+    this.compList.splice(idx - 1, 0, {
+      type: 'placeholder'
+    })
+    // 显示当前组件配置
+    this.currentIndex = idx - 2
+    this.currentConfig = this.compList[idx - 2]
+  }
+
+  private downComp (idx: number): any {
+    if (idx === this.compList.length - 2) {
+      return false
+    }
+    // 复制当前控件
+    const tmp = util.copyObj(this.compList[idx])
+    // 再删除控件+占位坑
+    this.compList.splice(idx, 2)
+    // 再插入控件
+    this.compList.splice(idx + 2, 0, tmp)
+    // 最后插入一个占位控件
+    this.compList.splice(idx + 3, 0, {
+      type: 'placeholder',
+      active: false
+    })
+    // 显示当前组件配置
+    this.currentIndex = idx + 2
+    this.currentConfig = this.compList[idx + 2]
+  }
+
+  private delComp (idx: number): any {
+    // 删除控件
+    this.compList.splice(idx, 2)
+    // 显示页面配置参数
+    this.showPageSet()
+  }
+
+  private dragover (e: any): void {
+    const target = e.target
+    if (!target.classList.contains('active')) target.classList.add('active')
+  }
+
+  private drop (e: any): void {
+    const target = e.target
+    target.classList.remove('active')
+    const key = e.dataTransfer.getData('cmp-type')
+    if (key === 'bottom-menu') return
+    const idx = parseInt(target.dataset.index)
+    if ((compConfig as any)[key]) {
+      this.resetCompUnchecked()
+      this.replacePlaceholderWithComp(idx, key)
+    } else {
+      this.$message.warning('没有查询到该组件的配置信息。。。')
+    }
+  }
+
+  private dragleave (e: any): void {
+    e.target.classList.remove('active')
+  }
+
+  private dragPhoneOver (): void {
+    const target: HTMLElement | null = document.querySelector('.place-holder:last-child')
+    if (target && !target.classList.contains('active')) {
+      target.classList.add('active')
+    }
+  }
+
+  private dropPhone (e: any): void {
+    const target: HTMLElement | null = document.querySelector('.place-holder:last-child')
+    if (target) {
+      target.classList.remove('active')
+      const key: string = e.dataTransfer.getData('cmp-type')
+      const idx: number = parseInt(target.dataset.index as string)
+      if ((compConfig as any)[key]) {
+        if (key === 'bottom-menu') {
+          if (this.bottomMenu) {
+            this.$message.info('已经存在一个底部导航组件了，请勿重复添加！')
+          } else {
+            this.addBottomMenu()
+          }
+        } else {
+          this.resetCompUnchecked()
+          this.replacePlaceholderWithComp(idx, key)
+        }
       } else {
         this.$message.warning('没有查询到该组件的配置信息。。。')
       }
-    },
-    dragleave (e) {
-      e.target.classList.remove('active')
-    },
-    dragPhoneOver () {
-      const target = document.querySelector('.place-holder:last-child')
-      if (target && !target.classList.contains('active')) target.classList.add('active')
-    },
-    dropPhone (e) {
-      const target = document.querySelector('.place-holder:last-child')
-      if (target) {
-        target.classList.remove('active')
-        const key = e.dataTransfer.getData('cmp-type')
-        const idx = parseInt(target.dataset.index)
-        if (compConfig[key]) {
-          if (key === 'bottom-menu') {
-            if (this.bottomMenu) {
-              this.$message.info('已经存在一个底部导航组件了，请勿重复添加！')
-            } else {
-              this.addBottomMenu()
-            }
-          } else {
-            this.resetCompUnchecked()
-            this.replacePlaceholderWithComp(idx, key)
-          }
-        } else {
-          this.$message.warning('没有查询到该组件的配置信息。。。')
-        }
-      }
-    },
-    dragPhoneLeave () {
-      const target = document.querySelector('.place-holder:last-child')
-      target && target.classList.remove('active')
     }
+  }
+
+  private dragPhoneLeave (): void {
+    const target: HTMLElement | null = document.querySelector('.place-holder:last-child')
+    target && target.classList.remove('active')
   }
 }
 </script>

@@ -151,136 +151,133 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'upload',
-  data () {
-    return {
-      currentTab: 'outside',
-      imgUrl: '',
-      dialogShow: false,
-      tableData: []
-    }
-  },
-  props: {
-    label: {
-      type: String,
-      default: ''
-    },
-    index: {
-      type: Number,
-      default: 0
-    },
-    item: {
-      type: Object,
-      default: null
-    }
-  },
-  methods: {
-    upload (e) {
-      const file = e.target.files[0]
-      if (file) {
-        if (['image/gif', 'image/png', 'image/jpg', 'image/jpeg'].indexOf(file.type) > -1) {
-          // 获取图片宽高
-          const reader = new FileReader()
-          reader.onloadend = () => {
-            const img = new Image()
-            img.onload = () => {
-              let invalide = true
-              if (this.item.hasOwnProperty('limit')) {
-                if (img.width !== this.item.limit.w) {
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+
+@Component({
+  name: 'Upload'
+})
+export default class Upload extends Vue {
+  @Prop({ default: '' })
+  private label!: string
+
+  @Prop({ default: 0 })
+  private index!: number
+
+  @Prop({ default: null })
+  private item: any
+
+  private currentTab: string = 'outside'
+  private imgUrl: string = ''
+  private dialogShow: Boolean = false
+  private tableData: Array<any> = []
+
+  private upload (e: any): void {
+    const file = e.target.files[0]
+    if (file) {
+      if (['image/gif', 'image/png', 'image/jpg', 'image/jpeg'].indexOf(file.type) > -1) {
+        // 获取图片宽高
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          const img: HTMLImageElement = new Image()
+          img.onload = () => {
+            let invalide = true
+            if (this.item.hasOwnProperty('limit')) {
+              if (img.width !== this.item.limit.w) {
+                invalide = false
+                this.$alert('图片宽度必须为 ' + this.item.limit.w + 'px', '提示')
+              }
+              if (img.height !== this.item.limit.h) {
+                invalide = false
+                this.$alert('图片高度必须为 ' + this.item.limit.h + 'px', '提示')
+              }
+              if (file.size / 1024 > this.item.limit.s) {
+                invalide = false
+                this.$alert('图片大小不能超过 ' + this.item.limit.s + 'k', '提示')
+              }
+            } else {
+              if (img.width > 750) {
+                invalide = false
+                this.$alert('图片宽度不能超过750px', '提示')
+              }
+              if (file.type === 'image/gif') {
+                if (file.size / 1024 > 2048) {
                   invalide = false
-                  this.$alert('图片宽度必须为 ' + this.item.limit.w + 'px', '提示')
-                }
-                if (img.height !== this.item.limit.h) {
-                  invalide = false
-                  this.$alert('图片高度必须为 ' + this.item.limit.h + 'px', '提示')
-                }
-                if (file.size / 1024 > this.item.limit.s) {
-                  invalide = false
-                  this.$alert('图片大小不能超过 ' + this.item.limit.s + 'k', '提示')
+                  this.$alert('gif图片不能超过2048k', '提示')
                 }
               } else {
-                if (img.width > 750) {
+                if (file.size / 1024 > 512) {
                   invalide = false
-                  this.$alert('图片宽度不能超过750px', '提示')
-                }
-                if (file.type === 'image/gif') {
-                  if (file.size / 1024 > 2048) {
-                    invalide = false
-                    this.$alert('gif图片不能超过2048k', '提示')
-                  }
-                } else {
-                  if (file.size / 1024 > 512) {
-                    invalide = false
-                    this.$alert('jpeg、png图片不能超过512k', '提示')
-                  }
+                  this.$alert('jpeg、png图片不能超过512k', '提示')
                 }
               }
+            }
 
-              if (invalide) {
-                const width = 750
-                const height = img.height * (750 / img.width).toFixed(4)
-                this.item.width = width
-                this.item.height = height
-                this.item.val = img.src
-                this.$emit('uploadSuccess', this.item, img, this.index)
-              }
+            if (invalide) {
+              const width = 750
+              const height = img.height * ((750 / img.width) as any).toFixed(4)
+              this.item.width = width
+              this.item.height = height
+              this.item.val = img.src
+              this.$emit('uploadSuccess', this.item, img, this.index)
             }
-            img.src = reader.result
-            this.$emit('beforeUpload', file, this.item, img, this.index)
           }
-          reader.onerror = (err) => {
-            console.log('reader error', err)
-          }
-          // 读出文件路径
-          reader.readAsDataURL(file)
-        } else {
-          this.$alert('图片格式须为jpg、jpeg、png、gif之一！', '提示')
+          img.src = reader.result as string
+          this.$emit('beforeUpload', file, this.item, img, this.index)
         }
-      }
-    },
-    setImgUrl () {
-      try {
-        const img = new Image()
-        img.onload = () => {
-          let invalide = true
-          if (this.item.hasOwnProperty('limit')) {
-            if (img.naturalWidth !== this.item.limit.w) {
-              invalide = false
-              this.$alert('图片宽度必须为 ' + this.item.limit.w + 'px', '提示')
-            }
-            if (img.naturalHeight !== this.item.limit.h) {
-              invalide = false
-              this.$alert('图片高度必须为 ' + this.item.limit.h + 'px', '提示')
-            }
-          } else {
-            // if (img.naturalWidth > 750) {
-            //   invalide = false
-            //   this.$alert('图片宽度不能超过750px', '提示')
-            // }
-          }
-          if (invalide) {
-            const width = 750
-            const height = img.naturalHeight * (750 / img.naturalWidth).toFixed(4)
-            this.item.width = width
-            this.item.height = height
-            this.item.val = img.src
-            this.dialogShow = false
-            this.$emit('uploadSuccess', this.item, img, this.index)
-          }
+        reader.onerror = (err) => {
+          console.log('reader error', err)
         }
-        img.src = this.imgUrl
-      } catch (e) {
-        console.warn(e)
+        // 读出文件路径
+        reader.readAsDataURL(file)
+      } else {
+        this.$alert('图片格式须为jpg、jpeg、png、gif之一！', '提示')
       }
-    },
-    delImg (item) {
-      item.val = ''
-    },
-    clickTab (tab) {
-      this.currentTab = tab.name
     }
+  }
+
+  private setImgUrl (): void {
+    try {
+      const img: HTMLImageElement = new Image()
+      img.onload = () => {
+        let invalide: Boolean = true
+        if (this.item.hasOwnProperty('limit')) {
+          if (img.naturalWidth !== this.item.limit.w) {
+            invalide = false
+            this.$alert('图片宽度必须为 ' + this.item.limit.w + 'px', '提示')
+          }
+          if (img.naturalHeight !== this.item.limit.h) {
+            invalide = false
+            this.$alert('图片高度必须为 ' + this.item.limit.h + 'px', '提示')
+          }
+        } else {
+          // if (img.naturalWidth > 750) {
+          //   invalide = false
+          //   this.$alert('图片宽度不能超过750px', '提示')
+          // }
+        }
+        if (invalide) {
+          const width = 750
+          const height = img.naturalHeight * ((750 / img.naturalWidth) as any).toFixed(4)
+          this.item.width = width
+          this.item.height = height
+          this.item.val = img.src
+          this.dialogShow = false
+          this.$emit('uploadSuccess', this.item, img, this.index)
+        }
+      }
+      img.src = this.imgUrl
+    } catch (e) {
+      console.warn(e)
+    }
+  }
+
+  private delImg (item: any): void {
+    item.val = ''
+  }
+
+  private clickTab (tab: any): void {
+    this.currentTab = tab.name
   }
 }
 </script>

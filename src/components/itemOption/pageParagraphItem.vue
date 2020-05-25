@@ -61,43 +61,43 @@
   </div>
 </template>
 
-<script>
-import util from '@/utils/tools'
-import compConfig from '@/config/comp.config.ts'
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
-export default {
-  data () {
-    return {
-      items: this.paragraphs,
-      defaultConf: util.copyObj(compConfig['page-paragraph'])
-    }
-  },
-  props: {
-    paragraphs: {
-      type: Array,
-      default: null
-    }
-  },
-  methods: {
-    upInput (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx - 1, 0, tmp)
-    },
-    downInput (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx + 1, 0, tmp)
-    },
-    delInput (idx) {
-      this.items.splice(idx, 1)
-    },
-    addInput () {
-      if (this.items.length <= 20) {
-        this.items.push(util.copyObj(this.defaultConf.action.config[0]))
-      } else {
-        this.$alert('最多添加20个段落项！')
-      }
+import util from '@/utils/tools'
+import compConfig from '@/config/comp.config'
+
+@Component({
+  name: 'PageParagraphItem'
+})
+export default class PageParagraphItem extends Vue {
+  @Prop({ default: null })
+  private paragraphs?: Array<any>
+
+  private defaultConf: any = util.copyObj(compConfig['page-paragraph'])
+  private items: Array<any> = this.paragraphs || []
+
+  private upInput (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx - 1, 0, tmp)
+  }
+
+  private downInput (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx + 1, 0, tmp)
+  }
+
+  private delInput (idx: number): void {
+    this.items.splice(idx, 1)
+  }
+
+  private addInput (): void {
+    if (this.items.length <= 20) {
+      this.items.push(util.copyObj(this.defaultConf.action.config[0]))
+    } else {
+      this.$alert('最多添加20个段落项！')
     }
   }
 }

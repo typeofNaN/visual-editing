@@ -8,30 +8,28 @@
   </svg>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 
-export default {
-  name: 'SvgIcon',
-  props: {
-    iconClass: {
-      type: String,
-      required: true
-    },
-    className: {
-      type: String,
-      default: ''
-    }
-  },
-  computed: {
-    iconName () {
-      return `#icon-${this.iconClass}`
-    },
-    svgClass () {
-      if (this.className) {
-        return 'svg-icon ' + this.className
-      } else {
-        return 'svg-icon'
-      }
+@Component({
+  name: 'SvgIcon'
+})
+export default class SvgIcon extends Vue {
+  @Prop({ default: '', required: true })
+  private iconClass!: string
+
+  @Prop({ default: '' })
+  private className!: string
+
+  private get iconName (): string {
+    return `#icon-${this.iconClass}`
+  }
+
+  private get svgClass (): string {
+    if (this.className) {
+      return 'svg-icon ' + this.className
+    } else {
+      return 'svg-icon'
     }
   }
 }

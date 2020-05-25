@@ -73,63 +73,62 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
 import util from '@/utils/tools'
 import compConfig from '@/config/comp.config.ts'
 import upload from '@/components/upload.vue'
 
-export default {
-  data () {
-    return {
-      defaultConf: util.copyObj(compConfig['bottom-menu']),
-      menus: this.items
-    }
-  },
+@Component({
+  name: 'BottomMenuItem',
   components: {
     upload
-  },
-  props: {
-    items: {
-      type: Array,
-      default: null
+  }
+})
+export default class BottomMenuItem extends Vue {
+  @Prop({ default: null })
+  private items?: Array<any>
+
+  $evt: any
+  private defaultConf: any = util.copyObj(compConfig['bottom-menu'])
+  private menus: Array<any> = this.items || []
+
+  @Watch('items', { deep: true })
+  private watchItems (val: Array<any>): void {
+    this.menus = val
+  }
+
+  private showClick (item: any, idx: number): void {
+    this.$evt.$emit('click:show', idx, ['outside'])
+  }
+
+  private upItem (idx: number): void {
+    const tmp: any = util.copyObj(this.menus[idx])
+    this.menus.splice(idx, 1)
+    this.menus.splice(idx - 1, 0, tmp)
+  }
+
+  private downItem (idx: number): void {
+    const tmp: any = util.copyObj(this.menus[idx])
+    this.menus.splice(idx, 1)
+    this.menus.splice(idx + 1, 0, tmp)
+  }
+
+  private delItem (idx: number): void {
+    this.menus.splice(idx, 1)
+  }
+
+  private addItem (): void {
+    if (this.menus.length < 10) {
+      this.menus.push(util.copyObj(this.defaultConf.action.config[0]))
+    } else {
+      this.$alert('最多添加5个导航项！')
     }
-  },
-  watch: {
-    items: {
-      handler (val) {
-        this.menus = val
-      },
-      deep: true
-    }
-  },
-  methods: {
-    showClick (banner, idx) {
-      // 底部导航只可配置外链
-      this.$evt.$emit('click:show', idx, ['outside'])
-    },
-    upItem (idx) {
-      const tmp = util.copyObj(this.menus[idx])
-      this.menus.splice(idx, 1)
-      this.menus.splice(idx - 1, 0, tmp)
-    },
-    downItem (idx) {
-      const tmp = util.copyObj(this.slides[idx])
-      this.menus.splice(idx, 1)
-      this.menus.splice(idx + 1, 0, tmp)
-    },
-    delItem (idx) {
-      this.menus.splice(idx, 1)
-    },
-    addItem () {
-      if (this.menus.length < 10) {
-        this.menus.push(util.copyObj(this.defaultConf.action.config[0]))
-      } else {
-        this.$alert('最多添加5个导航项！')
-      }
-    },
-    uploadSuccess (item, img, idx) {
-      console.log('uploadSuccess', item)
-    }
+  }
+
+  private uploadSuccess (): void {
+    console.log('uploadSuccess')
   }
 }
 </script>

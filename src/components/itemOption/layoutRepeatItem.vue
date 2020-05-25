@@ -63,55 +63,54 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
 import util from '@/utils/tools'
-import compConfig from '@/config/comp.config.ts'
+import compConfig from '@/config/comp.config'
 import upload from '@/components/upload.vue'
 
-export default {
-  data () {
-    return {
-      defaultConf: util.copyObj(compConfig['grid-menu']),
-      items: this.grids
-    }
-  },
+@Component({
+  name: 'LayoutRepeatItem',
   components: {
     upload
-  },
-  props: {
-    grids: {
-      type: Array,
-      default: null
-    }
-  },
-  watch: {
-    grids: {
-      handler (val) {
-        this.items = val
-      },
-      deep: true
-    }
-  },
-  methods: {
-    showClick (banner, idx) {
-      this.$evt.$emit('click:show', idx, ['outside'])
-    },
-    upItem (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx - 1, 0, tmp)
-    },
-    downItem (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx + 1, 0, tmp)
-    },
-    delItem (idx) {
-      this.items.splice(idx, 1)
-    },
-    addItem () {
-      this.items.push(util.copyObj(this.defaultConf.action.config[0]))
-    }
+  }
+})
+export default class LayoutRepeatItem extends Vue {
+  @Prop({ default: null })
+  private grids?: Array<any>
+
+  $evt: any
+  private defaultConf: any = util.copyObj(compConfig['grid-menu'])
+  private items: Array<any> = this.grids || []
+
+  @Watch('grids', { deep: true })
+  private watchGrids (val: Array<any>) {
+    this.items = val
+  }
+
+  private showClick (banner: any, idx: number): void {
+    this.$evt.$emit('click:show', idx, ['outside'])
+  }
+
+  private upItem (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx - 1, 0, tmp)
+  }
+
+  private downItem (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx + 1, 0, tmp)
+  }
+
+  private delItem (idx: number): void {
+    this.items.splice(idx, 1)
+  }
+
+  private addItem (): void {
+    this.items.push(util.copyObj(this.defaultConf.action.config[0]))
   }
 }
 </script>

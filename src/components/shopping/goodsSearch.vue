@@ -25,47 +25,47 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'GoodsSearch',
-  props: {
-    component: {
-      type: Object,
-      default: null
-    }
-  },
-  computed: {
-    getStyle () {
-      const ret = []
-      this.component.style.forEach((item) => {
-        const unit = item.unit || ''
-        if (item.val) {
-          if (Array.isArray(item.attr)) {
-            item.attr.forEach((atr, i) => {
-              ret.push(atr + ':' + item.val[i])
-            })
-          } else {
-            ret.push(item.attr + ':' + item.val + unit)
-          }
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+
+@Component({
+  name: 'GoodsSearch'
+})
+export default class GoodsSearch extends Vue {
+  @Prop({ default: null })
+  private component: any
+
+  private get getStyle (): string {
+    const ret: Array<string> = []
+    this.component.style.forEach((item: any) => {
+      const unit: string = item.unit || ''
+      if (item.val) {
+        if (Array.isArray(item.attr)) {
+          item.attr.forEach((atr: string, i: number) => {
+            ret.push(atr + ':' + item.val[i])
+          })
+        } else {
+          ret.push(item.attr + ':' + item.val + unit)
         }
-      })
-      return ret.join(';')
-    },
-    getSearchBoxHeight () {
-      let arr = this.component.others.config.find(i => i.attr === 'height')
-      return arr.val
-    },
-
-    iconPosition () {
-      let bool = true
-      let arr = this.component.others.config.find(i => i.attr === 'position')
-
-      if (arr.val === 'left') {
-        bool = false
       }
+    })
+    return ret.join(';')
+  }
 
-      return bool
+  private get getSearchBoxHeight (): number {
+    let arr = this.component.others.config.find((i: any) => i.attr === 'height')
+    return arr.val
+  }
+
+  private get iconPosition (): Boolean {
+    let bool: Boolean = true
+    let arr = this.component.others.config.find((i: any) => i.attr === 'position')
+
+    if (arr.val === 'left') {
+      bool = false
     }
+
+    return bool
   }
 }
 </script>

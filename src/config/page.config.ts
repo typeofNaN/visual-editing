@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   title: '页面配置',
   base: [
     {

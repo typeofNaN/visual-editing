@@ -156,56 +156,47 @@
   </el-dialog>
 </template>
 
-<script>
-export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data () {
-    return {
-      visible: this.show,
-      compList: [],
-      pageStyle: [],
-      bottomMenu: null
-    }
-  },
-  watch: {
-    show: {
-      handler (val) {
-        this.visible = this.show
-        if (localStorage.getItem('pageConfig')) {
-          this.pageStyle = JSON.parse(localStorage.getItem('pageConfig')).style || []
-        }
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 
-        if (localStorage.getItem('pageDateSet')) {
-          this.compList = JSON.parse(localStorage.getItem('pageDateSet')).config || []
-          this.bottomMenu = JSON.parse(localStorage.getItem('pageDateSet')).menu || null
+@Component({
+  name: 'Preview'
+})
+export default class Preview extends Vue {
+  @Prop({ default: false })
+  private show!: Boolean
+
+
+  private visible: Boolean = this.show
+  private compList: Array<any> = []
+  private pageStyle: Array<any> = []
+  private bottomMenu: any = null
+
+  @Watch('show', { immediate: true })
+  private watchShow (): void {
+    this.visible = this.show
+    this.pageStyle = JSON.parse(localStorage.getItem('pageConfig') as string).style || []
+    this.compList = JSON.parse(localStorage.getItem('pageDateSet') as string).config || []
+    this.bottomMenu = JSON.parse(localStorage.getItem('pageDateSet') as string).menu || null
+  }
+
+  private cancel (): void {
+    this.visible = false
+  }
+
+  private getStyle (): string {
+    const ret: Array<string> = []
+    this.pageStyle.forEach((item: any) => {
+      const unit: string = item.unit || ''
+      if (item.val) {
+        if (item.attr === 'background-image') {
+          ret.push(item.attr + ':url(' + item.val + ')')
+        } else {
+          ret.push(item.attr + ':' + item.val + unit)
         }
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    cancel () {
-      this.visible = false
-    },
-    getStyle () {
-      const ret = []
-      this.pageStyle.forEach((item) => {
-        const unit = item.unit || ''
-        if (item.val) {
-          if (item.attr === 'background-image') {
-            ret.push(item.attr + ':url(' + item.val + ')')
-          } else {
-            ret.push(item.attr + ':' + item.val + unit)
-          }
-        }
-      })
-      return ret.join(';')
-    }
+      }
+    })
+    return ret.join(';')
   }
 }
 </script>

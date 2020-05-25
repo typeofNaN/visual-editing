@@ -86,97 +86,96 @@
   </el-dialog>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
 import dragArea from '@/utils/dragarea.js'
 
-export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    clicks: {
-      type: Array,
-      default: null
-    },
-    img: {
-      type: String,
-      default: ''
-    }
-  },
-  data () {
-    return {
-      areas: this.clicks,
-      current: 0,
-      dialogShow: this.show
-    }
-  },
-  watch: {
-    clicks (list) {
-      this.areas = list
-    },
-    show (isShow) {
-      this.dialogShow = isShow
-      this.current = 0
-      if (isShow) {
-        this.$nextTick(() => {
-          dragArea.init({
-            container: 'areaMap',
-            cropBox: 'cropBox-0',
-            initareas: this.areas,
-            newcallback: (area) => {
-              this.areas.push({
-                index: parseInt(area.dataset.index),
-                x: parseInt(area.style.left),
-                y: parseInt(area.style.top),
-                w: parseInt(area.style.width),
-                h: parseInt(area.style.height),
-                click: ''
-              })
-              this.current = parseInt(area.dataset.index)
-            },
-            clickcallback: (area) => {
-              this.current = parseInt(area.dataset.index)
-            },
-            dragpointcallback: (area) => {
-              const idx = parseInt(area.dataset.index)
-              this.current = idx
-              const item = this.areas.find((item) => item.index === idx)
-              item.x = parseInt(area.style.left)
-              item.y = parseInt(area.style.top)
-              item.w = parseInt(area.style.width)
-              item.h = parseInt(area.style.height)
-            },
-            dragareacallback: (area) => {
-              const idx = parseInt(area.dataset.index)
-              this.current = idx
-              const item = this.areas.find((item) => item.index === idx)
-              item.x = parseInt(area.style.left)
-              item.y = parseInt(area.style.top)
-              item.w = parseInt(area.style.width)
-              item.h = parseInt(area.style.height)
-            }
-          })
+@Component({
+  name: 'ImageClick'
+})
+export default class ImageClick extends Vue {
+  @Prop({ default: false })
+  private show?: Boolean
+
+  @Prop({ default: null })
+  private clicks?: Array<any>
+
+  @Prop({ default: '' })
+  private img?: string
+
+  $evt: any
+  private areas: Array<any> = this.clicks || []
+  private current: number = 0
+  private dialogShow: Boolean = this.show || false
+
+  @Watch('clicks')
+  private watchClicks (list: Array<any>): void {
+    this.areas = list
+  }
+
+  @Watch('show')
+  private watchShow (isShow: Boolean): void {
+    this.dialogShow = isShow
+    this.current = 0
+    if (isShow) {
+      this.$nextTick(() => {
+        (dragArea as any).init({
+          container: 'areaMap',
+          cropBox: 'cropBox-0',
+          initareas: this.areas,
+          newcallback: (area: any): void => {
+            this.areas.push({
+              index: parseInt(area.dataset.index),
+              x: parseInt(area.style.left),
+              y: parseInt(area.style.top),
+              w: parseInt(area.style.width),
+              h: parseInt(area.style.height),
+              click: ''
+            })
+            this.current = parseInt(area.dataset.index)
+          },
+          clickcallback: (area: any): void => {
+            this.current = parseInt(area.dataset.index)
+          },
+          dragpointcallback: (area: any): void => {
+            const idx: number = parseInt(area.dataset.index)
+            this.current = idx
+            const item: any = this.areas.find((item) => item.index === idx)
+            item.x = parseInt(area.style.left)
+            item.y = parseInt(area.style.top)
+            item.w = parseInt(area.style.width)
+            item.h = parseInt(area.style.height)
+          },
+          dragareacallback: (area: any): void => {
+            const idx: number = parseInt(area.dataset.index)
+            this.current = idx
+            const item: any = this.areas.find((item) => item.index === idx)
+            item.x = parseInt(area.style.left)
+            item.y = parseInt(area.style.top)
+            item.w = parseInt(area.style.width)
+            item.h = parseInt(area.style.height)
+          }
         })
-      }
-    }
-  },
-  methods: {
-    delArea (area, idx) {
-      const n = this.areas.findIndex((item) => item.index === idx)
-      this.areas.splice(n, 1)
-      const box = document.getElementById('cropBox-' + idx)
-      box && box.remove()
-      // 重置样式
-      document.querySelectorAll('div.crop-box').forEach((val) => {
-        val.classList.remove('active')
       })
-      this.current = 0
-      document.getElementById('cropBox-0').classList.add('active')
-    },
-    showClick (area, idx) {
-      this.$evt.$emit('click:show', idx)
     }
+  }
+
+  private delArea (area: any, idx: number) {
+    const n: number = this.areas.findIndex((item) => item.index === idx)
+    this.areas.splice(n, 1)
+    const box: HTMLElement | null = document.getElementById('cropBox-' + idx) as HTMLElement
+    box && box.remove()
+    // 重置样式
+    document.querySelectorAll('div.crop-box').forEach((val) => {
+      val.classList.remove('active')
+    })
+    this.current = 0
+    ;(document.getElementById('cropBox-0') as HTMLElement).classList.add('active')
+  }
+
+  private showClick (area: any, idx: number): void {
+    this.$evt.$emit('click:show', idx)
   }
 }
 </script>

@@ -22,61 +22,56 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 import IScroll from 'iscroll'
 
-export default {
-  name: 'FloorMenu',
-  props: {
-    component: {
-      type: Object,
-      default: null
-    }
-  },
-  data () {
-    return {
-      items: this.component.action.config,
-      backgroundColor: this.component.style[0].val,
-      fillColor: this.component.style[2].val,
-      noScroll: null
-    }
-  },
-  watch: {
-    component: {
-      handler () {
-        this.items = this.component.action.config
-        this.backgroundColor = this.component.style[0].val
-        this.fillColor = this.component.style[2].val
-      },
-      deep: true
-    }
-  },
-  mounted () {
+@Component({
+  name: 'FloorMenu'
+})
+export default class FloorMenu extends Vue {
+  @Prop({ default: null })
+  private component: any
+
+
+  private items: any = this.component.action.config
+  private backgroundColor: string = this.component.style[0].val
+  private fillColor: string = this.component.style[2].val
+  private noScroll: any = null
+
+  @Watch('component', { deep: true })
+  private watchComponent (): void {
+    this.items = this.component.action.config
+    this.backgroundColor = this.component.style[0].val
+    this.fillColor = this.component.style[2].val
+  }
+
+  mounted (): void {
     this.initScroll()
-  },
-  methods: {
-    getItemStyle (idx) {
-      const ret = []
-      if (idx === 0) {
-        ret.push('background-color:' + this.component.style[1].val)
-        ret.push('color:' + this.component.style[3].val)
-      } else {
-        ret.push('background-color:' + this.component.style[0].val)
-        ret.push('color:' + this.component.style[2].val)
-      }
-      return ret.join(';')
-    },
-    initScroll () {
-      this.noScroll = null
-      setTimeout(() => {
-        this.noScroll = new IScroll('#floor_nav_menu', {
-          scrollX: true,
-          scrollY: false,
-          eventPassthrough: true,
-          preventDefault: false
-        })
-      }, 0)
+  }
+
+  private getItemStyle (idx: number): string {
+    const ret: Array<string> = []
+    if (idx === 0) {
+      ret.push('background-color:' + this.component.style[1].val)
+      ret.push('color:' + this.component.style[3].val)
+    } else {
+      ret.push('background-color:' + this.component.style[0].val)
+      ret.push('color:' + this.component.style[2].val)
     }
+    return ret.join(';')
+  }
+
+  private initScroll (): void {
+    this.noScroll = null
+    setTimeout(() => {
+      this.noScroll = new IScroll('#floor_nav_menu', {
+        scrollX: true,
+        scrollY: false,
+        eventPassthrough: true,
+        preventDefault: false
+      })
+    }, 0)
   }
 }
 </script>

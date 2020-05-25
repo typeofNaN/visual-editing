@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     title: '通用组件',
     collapse: false,

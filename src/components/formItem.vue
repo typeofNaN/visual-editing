@@ -162,49 +162,51 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
+
 import upload from './upload.vue'
 
-export default {
-  props: {
-    item: {
-      type: Object,
-      default: null
-    },
-    index: {
-      type: Number,
-      default: null
-    }
-  },
+@Component({
+  name: 'FormItem',
   components: {
     upload
-  },
-  methods: {
-    setFont (item, attr) {
-      if (attr === 'font-weight') {
-        this.$set(item.val, 0, item.val[0] === '600' ? '400' : '600')
-      }
-      if (attr === 'text-decoration') {
-        this.$set(item.val, 1, item.val[1] === 'underline' ? 'none' : 'underline')
-      }
-      if (attr === 'font-style') {
-        this.$set(item.val, 2, item.val[2] === 'italic' ? 'inherit' : 'italic')
-      }
-    },
-    setAlign (item, align) {
-      this.$set(item.val, 3, align)
-    },
-    inputBlur (rule, item) {
-      const reg = new RegExp(rule.regex)
-      if (!item.val.match(reg)) {
-        this.$alert(rule.tips, '提示')
-        item.val = ''
-        return false
-      }
-    },
-    uploadSuccess (item, img) {
-      console.log('uploadSuccess', item)
+  }
+})
+export default class FormItem extends Vue {
+  @Prop({ default: null })
+  private item: any
+
+  @Prop({ default: null })
+  private index!: number
+
+  private setFont (item: any, attr: string): void {
+    if (attr === 'font-weight') {
+      this.$set(item.val, 0, item.val[0] === '600' ? '400' : '600')
     }
+    if (attr === 'text-decoration') {
+      this.$set(item.val, 1, item.val[1] === 'underline' ? 'none' : 'underline')
+    }
+    if (attr === 'font-style') {
+      this.$set(item.val, 2, item.val[2] === 'italic' ? 'inherit' : 'italic')
+    }
+  }
+
+  private setAlign (item: any, align: any): void {
+    this.$set(item.val, 3, align)
+  }
+
+  private inputBlur (rule: any, item: any): any {
+    const reg = new RegExp(rule.regex)
+    if (!item.val.match(reg)) {
+      this.$alert(rule.tips, '提示')
+      item.val = ''
+      return false
+    }
+  }
+
+  private uploadSuccess (): void {
+    console.log('uploadSuccess')
   }
 }
 </script>

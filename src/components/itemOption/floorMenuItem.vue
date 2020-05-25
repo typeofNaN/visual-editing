@@ -68,54 +68,53 @@
   </div>
 </template>
 
-<script>
-import util from '@/utils/tools'
-import compConfig from '@/config/comp.config.ts'
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 
-export default {
-  data () {
-    return {
-      defaultConf: util.copyObj(compConfig['floor-menu']),
-      items: this.menus
-    }
-  },
-  props: {
-    menus: {
-      type: Array,
-      default: null
-    }
-  },
-  watch: {
-    menus: {
-      handler (val) {
-        this.items = val
-      },
-      deep: true
-    }
-  },
-  methods: {
-    showClick (banner, idx) {
-      this.$evt.$emit('click:show', idx, ['page'])
-    },
-    upItem (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx - 1, 0, tmp)
-    },
-    downItem (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx + 1, 0, tmp)
-    },
-    delItem (idx) {
-      this.items.splice(idx, 1)
-    },
-    addItem () {
-      if (this.items.length < 18) {
-        this.items.push(util.copyObj(this.defaultConf.action.config[0]))
-      } else {
-        this.$alert('最多添加18个导航项！')
-      }
+import util from '@/utils/tools'
+import compConfig from '@/config/comp.config'
+
+@Component({
+  name: 'FloorMenuItem'
+})
+export default class FloorMenuItem extends Vue {
+  @Prop({ default: null })
+  private menus?: Array<any>
+
+  $evt: any
+  private defaultConf: any = util.copyObj(compConfig['floor-menu'])
+  private items: Array<any> = this.menus || []
+
+  @Watch('menus', { deep: true })
+  private watchMenus (val: Array<any>): void {
+    this.items = val
+  }
+
+  private showClick (menu: any, idx: number): void {
+    this.$evt.$emit('click:show', idx, ['page'])
+  }
+
+  private upItem (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx - 1, 0, tmp)
+  }
+
+  private downItem (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx + 1, 0, tmp)
+  }
+
+  private delItem (idx: number): void {
+    this.items.splice(idx, 1)
+  }
+
+  private addItem (): void {
+    if (this.items.length < 18) {
+      this.items.push(util.copyObj(this.defaultConf.action.config[0]))
+    } else {
+      this.$alert('最多添加18个导航项！')
     }
   }
 }

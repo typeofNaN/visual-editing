@@ -334,34 +334,36 @@
   </el-dialog>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
 import dragArea from '@/utils/dragarea.js'
 
-export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false
-    },
-    img: {
-      type: String,
-      default: ''
-    },
-    end: {
-      type: String,
-      default: ''
-    },
-    times: {
-      type: Array,
-      default: null
-    }
-  },
-  data () {
-    return {
-      dialogShow: this.show,
-      currentTab: 'day',
-      mapKey: ['day', 'hour', 'minute', 'second'],
-      mapWeight: [
+interface IMapWeight {
+  val: number,
+  label: string
+}
+
+@Component({
+  name: 'TimeoutItem'
+})
+export default class TimeoutItem extends Vue {
+  @Prop({ default: false })
+  private show?: Boolean
+
+  @Prop({ default: '' })
+  private img?: string
+
+  @Prop({ default: '' })
+  private end?: string
+
+  @Prop({ default: null })
+  private times?: Array<any>
+
+  private dialogShow: Boolean = this.show || false
+  private currentTab: string = 'day'
+  private mapKey: Array<string> = ['day', 'hour', 'minute', 'second']
+  private mapWeight: Array<IMapWeight> = [
         {
           val: 200,
           label: 'Extra Light (Thin)'
@@ -384,155 +386,156 @@ export default {
           val: 800,
           label: 'Extra Bold'
         }
-      ],
-      areas: this.times,
-      counts: this.countTime()
+      ]
+  private areas: Array<any> = this.times || []
+  private counts: any = this.countTime()
+
+  @Watch('show')
+  private watchShow(isShow: Boolean) {
+    if (isShow) {
+      this.dialogShow = isShow
+      this.$nextTick(() => (dragArea as any).init({
+        container: 'timesMap',
+        moveAdd: false,
+        clickcallback: (area: any): void => {
+          this.currentTab = area.dataset.tab
+        },
+        dragpointcallback: (area: any): void => {
+          const tab: string = area.dataset.tab
+          this.currentTab = tab
+          const idx: number = this.mapKey.indexOf(tab)
+          this.areas[idx].x = parseInt(area.style.left)
+          this.areas[idx].y = parseInt(area.style.top)
+          this.areas[idx].w = parseInt(area.style.width)
+          this.areas[idx].h = parseInt(area.style.height)
+        },
+        dragareacallback: (area: any): void => {
+          const tab: string = area.dataset.tab
+          this.currentTab = tab
+          const idx: number = this.mapKey.indexOf(tab)
+          this.areas[idx].x = parseInt(area.style.left)
+          this.areas[idx].y = parseInt(area.style.top)
+          this.areas[idx].w = parseInt(area.style.width)
+          this.areas[idx].h = parseInt(area.style.height)
+        }
+      }))
     }
-  },
-  watch: {
-    show (isShow) {
-      if (isShow) {
-        this.dialogShow = isShow
-        this.$nextTick(() => dragArea.init({
-          container: 'timesMap',
-          moveAdd: false,
-          clickcallback: (area) => {
-            this.currentTab = area.dataset.tab
-          },
-          dragpointcallback: (area) => {
-            const tab = area.dataset.tab
-            this.currentTab = tab
-            const idx = this.mapKey.indexOf(tab)
-            this.areas[idx].x = parseInt(area.style.left)
-            this.areas[idx].y = parseInt(area.style.top)
-            this.areas[idx].w = parseInt(area.style.width)
-            this.areas[idx].h = parseInt(area.style.height)
-          },
-          dragareacallback: (area) => {
-            const tab = area.dataset.tab
-            this.currentTab = tab
-            const idx = this.mapKey.indexOf(tab)
-            this.areas[idx].x = parseInt(area.style.left)
-            this.areas[idx].y = parseInt(area.style.top)
-            this.areas[idx].w = parseInt(area.style.width)
-            this.areas[idx].h = parseInt(area.style.height)
-          }
-        }))
-      }
-    },
-    end () {
-      this.counts = this.countTime()
-    },
-    times: {
-      handler (val) {
-        this.areas = val
-        if (!val[1].show) {
-          val[0].show = false
-        }
-        if (!val[2].show) {
-          val[0].show = false
-          val[1].show = false
-        }
-        if (!val[3].show) {
-          val[0].show = false
-          val[1].show = false
-          val[2].show = false
-        }
-        if (!val[0].show &&
-          !val[1].show &&
-          !val[2].show &&
-          !val[3].show) {
-          this.$alert('至少需要显示一个数字！')
-          val[3].show = true
-        }
+  }
 
-        if (val[0].show) {
-          val[1].show = true
-          val[2].show = true
-          val[3].show = true
-        }
-        if (val[1].show) {
-          val[2].show = true
-          val[3].show = true
-        }
-        if (val[2].show) {
-          val[3].show = true
-        }
-      },
-      deep: true
+  @Watch('end')
+  private watchEnd (): void {
+    this.counts = this.countTime()
+  }
+
+  @Watch('times', { deep: true })
+  private watchTimes (val: Array<any>): void {
+    this.areas = val
+    if (!val[1].show) {
+      val[0].show = false
     }
-  },
-  methods: {
-    countTime () {
-      const ret = {
-        day: '00',
-        hour: '00',
-        allHour: '00',
-        minute: '00',
-        allMinute: '00',
-        second: '00',
-        allSecond: '00'
-      }
-      if (this.end) {
-        const time = new Date().getTime()
-        const sTime = new Date(this.end.replace(/-/g, '/')).getTime()
-        const ms = sTime - time
-        if (ms < 0) {
-          return ret
-        } else {
-          let day, hour, allHour, minute, allMinute, second, allSecond
-          day = Math.floor(ms / 1000 / 60 / 60 / 24)
-          day = day < 10 ? '0' + day : day
+    if (!val[2].show) {
+      val[0].show = false
+      val[1].show = false
+    }
+    if (!val[3].show) {
+      val[0].show = false
+      val[1].show = false
+      val[2].show = false
+    }
+    if (!val[0].show &&
+      !val[1].show &&
+      !val[2].show &&
+      !val[3].show) {
+      this.$alert('至少需要显示一个数字！')
+      val[3].show = true
+    }
 
-          hour = Math.floor(ms / 1000 / 60 / 60 % 24)
-          hour = hour < 10 ? '0' + hour : hour
-          allHour = Math.floor(ms / 1000 / 60 / 60)
-          allHour = allHour < 10 ? '0' + allHour : allHour
+    if (val[0].show) {
+      val[1].show = true
+      val[2].show = true
+      val[3].show = true
+    }
+    if (val[1].show) {
+      val[2].show = true
+      val[3].show = true
+    }
+    if (val[2].show) {
+      val[3].show = true
+    }
+  }
 
-          minute = Math.floor(ms / 1000 / 60 % 60)
-          minute = minute < 10 ? '0' + minute : minute
-          allMinute = Math.floor(ms / 1000 / 60)
-          allMinute = allMinute < 10 ? '0' + allMinute : allMinute
+  private countTime (): object {
+    const ret = {
+      day: '00',
+      hour: '00',
+      allHour: '00',
+      minute: '00',
+      allMinute: '00',
+      second: '00',
+      allSecond: '00'
+    }
+    if (this.end) {
+      const time: number = new Date().getTime()
+      const sTime: number = new Date(this.end.replace(/-/g, '/')).getTime()
+      const ms: number = sTime - time
+      if (ms < 0) {
+        return ret
+      } else {
+        let day, hour, allHour, minute, allMinute, second, allSecond
+        day = Math.floor(ms / 1000 / 60 / 60 / 24)
+        day = day < 10 ? '0' + day : day
 
-          second = Math.floor(ms / 1000 % 60)
-          second = second < 10 ? '0' + second : second
-          allSecond = Math.floor(ms / 1000)
-          allSecond = allSecond < 10 ? '0' + allSecond : allSecond
+        hour = Math.floor(ms / 1000 / 60 / 60 % 24)
+        hour = hour < 10 ? '0' + hour : hour
+        allHour = Math.floor(ms / 1000 / 60 / 60)
+        allHour = allHour < 10 ? '0' + allHour : allHour
 
-          return {
-            day: day,
-            hour: hour,
-            allHour: allHour,
-            minute: minute,
-            allMinute: allMinute,
-            second: second,
-            allSecond: allSecond
-          }
+        minute = Math.floor(ms / 1000 / 60 % 60)
+        minute = minute < 10 ? '0' + minute : minute
+        allMinute = Math.floor(ms / 1000 / 60)
+        allMinute = allMinute < 10 ? '0' + allMinute : allMinute
+
+        second = Math.floor(ms / 1000 % 60)
+        second = second < 10 ? '0' + second : second
+        allSecond = Math.floor(ms / 1000)
+        allSecond = allSecond < 10 ? '0' + allSecond : allSecond
+
+        return {
+          day: day,
+          hour: hour,
+          allHour: allHour,
+          minute: minute,
+          allMinute: allMinute,
+          second: second,
+          allSecond: allSecond
         }
       }
-      return ret
-    },
-    changTimes (tab) {
-      this.currentTab = tab.name
-    },
-    getStyle (style) {
-      const ret = []
-      const dis = style.show ? 'block' : 'none'
-      ret.push('display:' + dis)
-      ret.push('left:' + style.x + 'px')
-      ret.push('top:' + style.y + 'px')
-      ret.push('width:' + style.w + 'px')
-      ret.push('height:' + style.h + 'px')
-      ret.push('line-height:' + style.h + 'px')
-      return ret.join(';')
-    },
-    getFontStyle (style) {
-      const ret = []
-      ret.push('font-size:' + style.font + 'px')
-      ret.push('font-weight:' + style.weight)
-      ret.push('color:' + style.color)
-      return ret.join(';')
     }
+    return ret
+  }
+
+  private changTimes (tab: any): void {
+    this.currentTab = tab.name
+  }
+
+  vgetStyle (style: any): string {
+    const ret: Array<string> = []
+    const dis: string = style.show ? 'block' : 'none'
+    ret.push('display:' + dis)
+    ret.push('left:' + style.x + 'px')
+    ret.push('top:' + style.y + 'px')
+    ret.push('width:' + style.w + 'px')
+    ret.push('height:' + style.h + 'px')
+    ret.push('line-height:' + style.h + 'px')
+    return ret.join(';')
+  }
+
+  private getFontStyle (style: any): string {
+    const ret: Array<string> = []
+    ret.push('font-size:' + style.font + 'px')
+    ret.push('font-weight:' + style.weight)
+    ret.push('color:' + style.color)
+    return ret.join(';')
   }
 }
 </script>

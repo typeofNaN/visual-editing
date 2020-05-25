@@ -99,64 +99,69 @@
   </div>
 </template>
 
-<script>
-import util from '@/utils/tools'
-import compConfig from '@/config/comp.config.ts'
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 
-export default {
-  data () {
-    return {
-      inputs: this.forms,
-      defaultConf: util.copyObj(compConfig['form']),
-      inputTypes: [
-        {
-          name: '文本',
-          val: 'text'
-        }, {
-          name: '数字',
-          val: 'number'
-        }, {
-          name: '日期选择',
-          val: 'date'
-        }, {
-          name: '下拉选择',
-          val: 'select'
-        }, {
-          name: 'radio单选',
-          val: 'radio'
-        }, {
-          name: 'checkbox多选',
-          val: 'checkbox'
-        }
-      ]
+import util from '@/utils/tools'
+import compConfig from '@/config/comp.config'
+
+interface IInputType {
+  name: string,
+  val: string
+}
+
+@Component({
+  name: 'InputItem'
+})
+export default class InputItem extends Vue {
+  @Prop({ default: null })
+  private forms?: Array<any>
+
+  private inputs: Array<any> = this.forms || []
+  private defaultConf: any = util.copyObj(compConfig['form'])
+  private inputTypes: Array<IInputType> = [
+    {
+      name: '文本',
+      val: 'text'
+    }, {
+      name: '数字',
+      val: 'number'
+    }, {
+      name: '日期选择',
+      val: 'date'
+    }, {
+      name: '下拉选择',
+      val: 'select'
+    }, {
+      name: 'radio单选',
+      val: 'radio'
+    }, {
+      name: 'checkbox多选',
+      val: 'checkbox'
     }
-  },
-  props: {
-    forms: {
-      type: Array,
-      default: null
-    }
-  },
-  methods: {
-    upInput (idx) {
-      const tmp = util.copyObj(this.inputs[idx])
-      this.inputs.splice(idx, 1)
-      this.inputs.splice(idx - 1, 0, tmp)
-    },
-    downInput (idx) {
-      const tmp = util.copyObj(this.inputs[idx])
-      this.inputs.splice(idx, 1)
-      this.inputs.splice(idx + 1, 0, tmp)
-    },
-    delInput (idx) {
-      this.inputs.splice(idx, 1)
-    },
-    addInput () {
-      if (this.inputs.length < 10) {
-        this.inputs.push(util.copyObj(this.defaultConf.action.config[0]))
-      } else {
-        this.$alert('最多添加10个表单项！')
-      }
+  ]
+
+  private upInput (idx: number): void {
+    const tmp: any = util.copyObj(this.inputs[idx])
+    this.inputs.splice(idx, 1)
+    this.inputs.splice(idx - 1, 0, tmp)
+  }
+
+  private downInput (idx: number): void {
+    const tmp: any = util.copyObj(this.inputs[idx])
+    this.inputs.splice(idx, 1)
+    this.inputs.splice(idx + 1, 0, tmp)
+  }
+
+  private delInput (idx: number): void {
+    this.inputs.splice(idx, 1)
+  }
+
+  private addInput (): void {
+    if (this.inputs.length < 10) {
+      this.inputs.push(util.copyObj(this.defaultConf.action.config[0]))
+    } else {
+      this.$alert('最多添加10个表单项！')
     }
   }
 }

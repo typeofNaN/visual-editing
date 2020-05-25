@@ -73,58 +73,57 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
 import util from '@/utils/tools'
-import compConfig from '@/config/comp.config.ts'
+import compConfig from '@/config/comp.config'
 import upload from '@/components/upload.vue'
 
-export default {
-  data () {
-    return {
-      defaultConf: util.copyObj(compConfig['grid-menu']),
-      items: this.grids
-    }
-  },
+@Component({
+  name: 'GridMenuItem',
   components: {
     upload
-  },
-  props: {
-    grids: {
-      type: Array,
-      default: null
-    }
-  },
-  watch: {
-    grids: {
-      handler (val) {
-        this.items = val
-      },
-      deep: true
-    }
-  },
-  methods: {
-    showClick (banner, idx) {
-      this.$evt.$emit('click:show', idx, ['outside'])
-    },
-    upItem (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx - 1, 0, tmp)
-    },
-    downItem (idx) {
-      const tmp = util.copyObj(this.items[idx])
-      this.items.splice(idx, 1)
-      this.items.splice(idx + 1, 0, tmp)
-    },
-    delItem (idx) {
-      this.items.splice(idx, 1)
-    },
-    addItem () {
-      if (this.items.length < 10) {
-        this.items.push(util.copyObj(this.defaultConf.action.config[0]))
-      } else {
-        this.$alert('最多添加10个点击项！')
-      }
+  }
+})
+export default class GridMenuItem extends Vue {
+  @Prop({ default: null })
+  private grids?: Array<any>
+
+  $evt: any
+  private defaultConf: any = util.copyObj(compConfig['grid-menu'])
+  private items: Array<any> = this.grids || []
+
+  @Watch('grids', { deep: true })
+  private watchGrids (val: Array<any>): void {
+    this.items = val
+  }
+
+  private showClick (menu: any, idx: number): void {
+    this.$evt.$emit('click:show', idx, ['outside'])
+  }
+
+  private upItem (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx - 1, 0, tmp)
+  }
+
+  private downItem (idx: number): void {
+    const tmp: any = util.copyObj(this.items[idx])
+    this.items.splice(idx, 1)
+    this.items.splice(idx + 1, 0, tmp)
+  }
+
+  private delItem (idx: number): void {
+    this.items.splice(idx, 1)
+  }
+
+  private addItem (): void {
+    if (this.items.length < 10) {
+      this.items.push(util.copyObj(this.defaultConf.action.config[0]))
+    } else {
+      this.$alert('最多添加10个点击项！')
     }
   }
 }

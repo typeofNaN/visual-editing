@@ -65,47 +65,47 @@
   </div>
 </template>
 
-<script>
-import util from '@/utils/tools'
-import upload from '@/components/upload.vue'
-import compConfig from '@/config/comp.config.ts'
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
-export default {
+import util from '@/utils/tools'
+import compConfig from '@/config/comp.config'
+import upload from '@/components/upload.vue'
+
+@Component({
+  name: 'GoodsItem',
   components: {
     upload
-  },
-  data () {
-    return {
-      list: this.items,
-      defaultConf: util.copyObj(compConfig['goods'])
-    }
-  },
-  props: {
-    items: {
-      type: Array,
-      default: null
-    }
-  },
-  methods: {
-    upItem (idx) {
-      const tmp = util.copyObj(this.list[idx])
-      this.list.splice(idx, 1)
-      this.list.splice(idx - 1, 0, tmp)
-    },
-    downItem (idx) {
-      const tmp = util.copyObj(this.list[idx])
-      this.list.splice(idx, 1)
-      this.list.splice(idx + 1, 0, tmp)
-    },
-    delItem (idx) {
-      this.list.splice(idx, 1)
-    },
-    addItem () {
-      if (this.list.length < 20) {
-        this.list.push(util.copyObj(this.defaultConf.action.config[0]))
-      } else {
-        this.$alert('最多添加20个列表项！')
-      }
+  }
+})
+export default class GoodsItem extends Vue {
+  @Prop({ default: null })
+  private items?: Array<any>
+
+  private defaultConf:any = util.copyObj(compConfig['goods'])
+  private list: Array<any> = this.items || []
+
+  private upItem (idx: number): void {
+    const tmp: any = util.copyObj(this.list[idx])
+    this.list.splice(idx, 1)
+    this.list.splice(idx - 1, 0, tmp)
+  }
+
+  private downItem (idx: number): void {
+    const tmp: any = util.copyObj(this.list[idx])
+    this.list.splice(idx, 1)
+    this.list.splice(idx + 1, 0, tmp)
+  }
+
+  private delItem (idx: number): void {
+    this.list.splice(idx, 1)
+  }
+
+  private addItem (): void {
+    if (this.list.length < 20) {
+      this.list.push(util.copyObj(this.defaultConf.action.config[0]))
+    } else {
+      this.$alert('最多添加20个列表项！')
     }
   }
 }

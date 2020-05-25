@@ -26,44 +26,37 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'Coupon',
-  props: {
-    component: {
-      type: Object,
-      default: null
-    }
-  },
-  data () {
-    return {
-      items: this.component.action.config
-    }
-  },
-  computed: {
-    getStyle () {
-      const ret = []
-      this.component.style.forEach((item) => {
-        const unit = item.unit || ''
-        item.val && ret.push(item.attr + ':' + item.val + unit)
-      })
-      return ret.join(';')
-    },
-    getItemStyle () {
-      const column = parseInt(this.component.base[0].val)
-      const num = this.items.length > column ? 100 / column : 100 / this.items.length
-      return 'width:' + num + '%;'
-    }
-  },
-  watch: {
-    component: {
-      handler () {
-        this.items = this.component.action.config
-      },
-      deep: true
-    }
-  },
-  methods: {
+<script lang="ts">
+import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
+
+@Component({
+  name: 'Coupon'
+})
+export default class Coupon extends Vue {
+  @Prop({ default: null })
+  private component: any
+
+  private items: any = this.component.action.config
+
+
+  private get getStyle (): string {
+    const ret: Array<string> = []
+    this.component.style.forEach((item: any) => {
+      const unit = item.unit || ''
+      item.val && ret.push(item.attr + ':' + item.val + unit)
+    })
+    return ret.join(';')
+  }
+
+  private get getItemStyle (): string {
+    const column: number = parseInt(this.component.base[0].val)
+    const num: number = this.items.length > column ? 100 / column : 100 / this.items.length
+    return 'width:' + num + '%;'
+  }
+
+  @Watch('component', { deep: true })
+  private watchComponent (): void {
+    this.items = this.component.action.config
   }
 }
 </script>
