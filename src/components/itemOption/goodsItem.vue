@@ -69,7 +69,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 import util from '@/utils/tools'
-import compConfig from '@/config/comp.config'
+import compConfig from '@/config/componentConfig'
 import upload from '@/components/upload.vue'
 
 @Component({

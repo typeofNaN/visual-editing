@@ -231,9 +231,9 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 
 import util from '@/utils/tools'
 // 页面默认配置
-import pageOption from '@/config/page.config'
+import pageOption from '@/config/appPageConfig'
 // 组件默认配置
-import compConfig from '@/config/comp.config'
+import compConfig from '@/config/componentConfig'
 
 import AppSidebar from '@/components/slidebar.vue'
 import AppToolbar from '@/components/toolbar.vue'

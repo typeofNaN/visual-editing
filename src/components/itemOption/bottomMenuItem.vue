@@ -77,7 +77,7 @@
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 
 import util from '@/utils/tools'
-import compConfig from '@/config/comp.config.ts'
+import compConfig from '@/config/componentConfig.ts'
 import upload from '@/components/upload.vue'
 
 @Component({

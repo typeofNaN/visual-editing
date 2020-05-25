@@ -43,7 +43,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 
-import menuConfig from '@/config/menu.config'
+import menuConfig from '@/config/slideMenuConfig'
 
 interface IMenuConfig {
   title: string,
