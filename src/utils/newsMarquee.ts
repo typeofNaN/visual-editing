@@ -1,4 +1,4 @@
-(function (root, factory) {
+(function (root: any, factory: Function) {
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = factory()
   } else {
@@ -7,7 +7,7 @@
 }(this, function () {
   'use strict'
 
-  function Marquee (el, opt) {
+  function Marquee (this: any, el: string | HTMLElement, opt: any) {
     var _self = this
     this.oMarquee = typeof el === 'string' ? document.querySelector(el) : el
     if (!this.oMarquee) return

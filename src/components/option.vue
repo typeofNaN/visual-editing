@@ -164,6 +164,8 @@ import scrollItem from '@/components/itemOption/scrollItem.vue'
 import horizontalItem from '@/components/itemOption/horizontalItem.vue'
 import verticalItem from '@/components/itemOption/verticalItem.vue'
 
+import marqueeItem from '@/components/itemOption/marqueeItem.vue'
+
 @Component({
   name: 'AppOption',
   components: {
@@ -184,7 +186,8 @@ import verticalItem from '@/components/itemOption/verticalItem.vue'
     bannerItem,
     scrollItem,
     horizontalItem,
-    verticalItem
+    verticalItem,
+    marqueeItem
   }
 })
 export default class AppOption extends Vue {

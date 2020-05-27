@@ -1,29 +1,29 @@
-(function (root, factory) {
+(function (root: any, factory: Function) {
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = factory()
   } else {
     root['dragarea'] = factory()
   }
 }(this, function () {
-  var getEle = function (str) {
+  var getEle = function (str: string): HTMLElement | null {
     return document.getElementById(str)
   }
 
-  var getCss = function (o, key) {
+  var getCss = function (o: any, key: any) {
     return o.currentStyle ? o.currentStyle[key] : window.getComputedStyle(o, null)[key]
   }
 
-  function getScroll (scrollProp, offsetProp) {
-    if (typeof global[offsetProp] !== 'undefined') {
-      return global[offsetProp]
-    }
+  function getScroll (scrollProp: any, offsetProp: any) {
+    // if (typeof global[offsetProp] !== 'undefined') {
+    //   return global[offsetProp]
+    // }
     if (document.documentElement.clientHeight) {
-      return document.documentElement[scrollProp]
+      return (document as any).documentElement[scrollProp]
     }
-    return document.body[scrollProp]
+    return (document as any).body[scrollProp]
   }
 
-  var getOffset = function (el) {
+  var getOffset = function (el: HTMLElement) {
     var rect = el.getBoundingClientRect()
     return {
       left: rect.left + getScroll('scrollLeft', 'pageXOffset'),
@@ -35,19 +35,19 @@
 
   var dragarea = {
 
-    init: function (opt) {
-      var container = getEle(opt.container)
-      var cropBox = opt.cropBox ? getEle(opt.cropBox) : null
-      var moveAdd = opt.hasOwnProperty('moveAdd') ? opt.moveAdd : true
+    init: function (opt: any) {
+      var container: any = getEle(opt.container)
+      var cropBox: any = opt.cropBox ? getEle(opt.cropBox) : null
+      var moveAdd: any = opt.hasOwnProperty('moveAdd') ? opt.moveAdd : true
 
-      var start = null
-      var flag = false
-      var addHotFlag = false
-      var dragPointFlag = false
-      var dragAreaFlag = false
+      var start: any = null
+      var flag: Boolean = false
+      var addHotFlag: Boolean = false
+      var dragPointFlag: Boolean = false
+      var dragAreaFlag: Boolean = false
 
-      var currentHotBox = null
-      var newHotBox = null
+      var currentHotBox: any = null
+      var newHotBox: any = null
 
       if (!container) {
         console.warn('container null')
@@ -55,7 +55,7 @@
       }
 
       // 先清空上一次的区域
-      var childs = container.childNodes
+      var childs: any = container.childNodes
       // 从0到length会删不全
       if (cropBox && childs.length) {
         for (let i = childs.length - 1; i >= 0; i--) {
@@ -83,7 +83,7 @@
         }
       }
 
-      container.addEventListener('mousedown', function (e) {
+      container.addEventListener('mousedown', function (e: any) {
         e.stopImmediatePropagation()
         // 获取可拖动范围
         var usearea = getOffset(container)
@@ -209,7 +209,7 @@
           }
         }
 
-        var drag = null
+        var drag: any = null
         var parent = target.parentNode
         // 获取标记的拖动元素
         if (target.classList.contains('crop-box-content')) {
@@ -278,7 +278,7 @@
               currentHotBox = target.parentNode
 
               // 鼠标移动距离
-              var moveArea = {
+              var moveArea: any = {
                 x: e.clientX > usearea.left + usearea.width ? usearea.left + usearea.width - start.x : e.clientX < usearea.left ? usearea.left - start.x : e.clientX - start.x,
                 y: e.clientY > usearea.top + usearea.height ? usearea.top + usearea.height - start.y : e.clientY < usearea.top ? usearea.top - start.y : e.clientY - start.y
               }
@@ -389,7 +389,7 @@
         container.ondragstart = null
       }, false)
 
-      container.addEventListener('click', function (e) {
+      container.addEventListener('click', function (e: any) {
         var t = e.target
         var drag = null
         var parent = t.parentNode

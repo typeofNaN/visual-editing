@@ -89,7 +89,8 @@
 <script lang="ts">
 import { Component, Prop, Watch, Vue } from 'vue-property-decorator'
 
-import dragArea from '@/utils/dragarea.js'
+// import dragArea from '@/utils/dragarea.js'
+const dragArea = require('@/utils/dragarea')
 
 @Component({
   name: 'ImageClick'
