@@ -1,10 +1,10 @@
-# Visual Editing
+# visual editing
 
 Visual Editing using @vue/cli3 and typescript build
 
 ## Demo
 
-[demo](https://blog.typeofnan.com/Visual-Editing/dist)
+[demo](https://blog.typeofnan.com/visual-editing/dist)
 
 ## Project setup
 ```
