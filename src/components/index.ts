@@ -1,63 +1,63 @@
-import BaseText from './common/text.vue'
-import BaseImage from './common/image.vue'
-import BaseForm from './common/form.vue'
-import PageTitle from './common/pageTitle.vue'
-import PageParagraph from './common/pageParagraph.vue'
-import PageIntro from './common/pageIntro.vue'
-import Timeout from './common/timeout.vue'
-import FloorTitle from './common/floorTitle.vue'
-import PageFaq from './common/pageFaq.vue'
+import BaseText from '@/components/common/text.vue'
+import BaseImage from '@/components/common/image.vue'
+import BaseForm from '@/components/common/form.vue'
+import PageTitle from '@/components/common/pageTitle.vue'
+import PageParagraph from '@/components/common/pageParagraph.vue'
+import PageIntro from '@/components/common/pageIntro.vue'
+import Timeout from '@/components/common/timeout.vue'
+import FloorTitle from '@/components/common/floorTitle.vue'
+import PageFaq from '@/components/common/pageFaq.vue'
 
-import BottomMenu from './navLink/bottomMenu.vue'
-import GridMenu from './navLink/gridMenu.vue'
-import FloorMenu from './navLink/floorMenu.vue'
+import BottomMenu from '@/components/navLink/bottomMenu.vue'
+import GridMenu from '@/components/navLink/gridMenu.vue'
+import FloorMenu from '@/components/navLink/floorMenu.vue'
 
-import LayoutRepeat from './lay/layoutRepeat.vue'
-import LayoutLeft from './lay/layoutLeft.vue'
-import LayoutRight from './lay/layoutRight.vue'
+import LayoutRepeat from '@/components/lay/layoutRepeat.vue'
+import LayoutLeft from '@/components/lay/layoutLeft.vue'
+import LayoutRight from '@/components/lay/layoutRight.vue'
 
-import GoodsSearch from './shopping/goodsSearch.vue'
-import Coupon from './shopping/coupon.vue'
-import Goods from './shopping/goods.vue'
+import GoodsSearch from '@/components/shopping/goodsSearch.vue'
+import Coupon from '@/components/shopping/coupon.vue'
+import Goods from '@/components/shopping/goods.vue'
 
-import SwiperBanner from './swiper/swiperBanner.vue'
-import ScrollLeft from './swiper/scrollLeft.vue'
+import SwiperBanner from '@/components/swiper/swiperBanner.vue'
+import ScrollLeft from '@/components/swiper/scrollLeft.vue'
 
-import HorizontalList from './list/horizontalList.vue'
-import VerticalList from './list/verticalList.vue'
+import HorizontalList from '@/components/list/horizontalList.vue'
+import VerticalList from '@/components/list/verticalList.vue'
 
-import NewsMarquee from './animate/newsMarquee.vue'
+import NewsMarquee from '@/components/animate/newsMarquee.vue'
 
 export default {
   install (Vue: any) {
-    Vue.component(BaseText.name, BaseText)
-    Vue.component(BaseImage.name, BaseImage)
-    Vue.component(BaseForm.name, BaseForm)
-    Vue.component(PageTitle.name, PageTitle)
-    Vue.component(PageParagraph.name, PageParagraph)
-    Vue.component(PageIntro.name, PageIntro)
-    Vue.component(Timeout.name, Timeout)
-    Vue.component(FloorTitle.name, FloorTitle)
-    Vue.component(PageFaq.name, PageFaq)
+    Vue.component('BaseText', BaseText)
+    Vue.component('BaseImage', BaseImage)
+    Vue.component('BaseForm', BaseForm)
+    Vue.component('PageTitle', PageTitle)
+    Vue.component('PageParagraph', PageParagraph)
+    Vue.component('PageIntro', PageIntro)
+    Vue.component('Timeout', Timeout)
+    Vue.component('FloorTitle', FloorTitle)
+    Vue.component('PageFaq', PageFaq)
 
-    Vue.component(BottomMenu.name, BottomMenu)
-    Vue.component(GridMenu.name, GridMenu)
-    Vue.component(FloorMenu.name, FloorMenu)
+    Vue.component('BottomMenu', BottomMenu)
+    Vue.component('GridMenu', GridMenu)
+    Vue.component('FloorMenu', FloorMenu)
 
-    Vue.component(LayoutRepeat.name, LayoutRepeat)
-    Vue.component(LayoutLeft.name, LayoutLeft)
-    Vue.component(LayoutRight.name, LayoutRight)
+    Vue.component('LayoutRepeat', LayoutRepeat)
+    Vue.component('LayoutLeft', LayoutLeft)
+    Vue.component('LayoutRight', LayoutRight)
 
-    Vue.component(GoodsSearch.name, GoodsSearch)
-    Vue.component(Coupon.name, Coupon)
-    Vue.component(Goods.name, Goods)
+    Vue.component('GoodsSearch', GoodsSearch)
+    Vue.component('Coupon', Coupon)
+    Vue.component('Goods', Goods)
 
-    Vue.component(SwiperBanner.name, SwiperBanner)
-    Vue.component(ScrollLeft.name, ScrollLeft)
+    Vue.component('SwiperBanner', SwiperBanner)
+    Vue.component('ScrollLeft', ScrollLeft)
 
-    Vue.component(HorizontalList.name, HorizontalList)
-    Vue.component(VerticalList.name, VerticalList)
+    Vue.component('HorizontalList', HorizontalList)
+    Vue.component('VerticalList', VerticalList)
 
-    Vue.component(NewsMarquee.name, NewsMarquee)
+    Vue.component('NewsMarquee', NewsMarquee)
   }
 }

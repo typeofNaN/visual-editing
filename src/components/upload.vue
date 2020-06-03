@@ -226,7 +226,7 @@ export default class Upload extends Vue {
           this.$emit('beforeUpload', file, this.item, img, this.index)
         }
         reader.onerror = (err) => {
-          console.log('reader error', err)
+          this.$message.error('error')
         }
         // 读出文件路径
         reader.readAsDataURL(file)
@@ -268,7 +268,7 @@ export default class Upload extends Vue {
       }
       img.src = this.imgUrl
     } catch (e) {
-      console.warn(e)
+      this.$message.error(e)
     }
   }
 

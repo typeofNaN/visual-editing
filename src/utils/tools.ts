@@ -18,7 +18,6 @@ export default {
         time = parseInt(time)
       }
       if ((typeof time === 'number') && (time.toString().length === 10)) {
-        console.log('is number')
         time = time * 1000
       }
       date = new Date(time)

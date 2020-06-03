@@ -128,7 +128,7 @@ export default class BottomMenuItem extends Vue {
   }
 
   private uploadSuccess (): void {
-    console.log('uploadSuccess')
+    this.$message.success('upload Success')
   }
 }
 </script>

@@ -3,14 +3,10 @@ import App from './App.vue'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import H5Components from './components'
-import './icons/index.ts'
+import H5Components from './components/index'
+import './icons/index'
 
 import './assets/style.scss'
-
-Vue.use(ElementUI)
-
-Vue.config.productionTip = false
 
 const evt = {
   install (Vue: any) {
@@ -19,7 +15,13 @@ const evt = {
 }
 Vue.use(evt)
 Vue.use(H5Components)
+Vue.use(ElementUI)
+
+Vue.config.productionTip = false
+
 
 new Vue({
-  render: h => h(App)
-}).$mount('#app')
+  el: '#app',
+  components: { App },
+  template: '<App/>'
+})

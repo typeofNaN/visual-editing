@@ -50,7 +50,6 @@
       var newHotBox: any = null
 
       if (!container) {
-        console.warn('container null')
         return
       }
 
@@ -344,10 +343,9 @@
         if (addHotFlag) {
           // 20可以通过陪参传入
           if (parseInt(newHotBox.style.width) < 20 || parseInt(newHotBox.style.height) < 20) {
-            // console.log(newHotBox)
             newHotBox && newHotBox.parentNode.removeChild(newHotBox)
-            parseInt(newHotBox.style.width) < 20 && console.log('热区宽度太窄了，建议大于20px')
-            parseInt(newHotBox.style.height) < 20 && console.log('热区高度太小了，建议大于20px')
+            parseInt(newHotBox.style.width) < 20 && alert('热区宽度太窄了，建议大于20px')
+            parseInt(newHotBox.style.height) < 20 && alert('热区高度太小了，建议大于20px')
           } else {
             document.querySelectorAll('div.crop-box').forEach(function (val) {
               val.classList.remove('active')

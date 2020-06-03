@@ -175,9 +175,14 @@ export default class Preview extends Vue {
   @Watch('show', { immediate: true })
   private watchShow (): void {
     this.visible = this.show
-    this.pageStyle = JSON.parse(localStorage.getItem('pageConfig') as string).style || []
-    this.compList = JSON.parse(localStorage.getItem('pageDateSet') as string).config || []
-    this.bottomMenu = JSON.parse(localStorage.getItem('pageDateSet') as string).menu || null
+    if (localStorage.getItem('pageConfig')) {
+      this.pageStyle = JSON.parse(localStorage.getItem('pageConfig') as string).style || []
+    }
+
+    if (localStorage.getItem('pageDateSet')) {
+      this.compList = JSON.parse(localStorage.getItem('pageDateSet') as string).config || []
+      this.bottomMenu = JSON.parse(localStorage.getItem('pageDateSet') as string).menu || null
+    }
   }
 
   private cancel (): void {

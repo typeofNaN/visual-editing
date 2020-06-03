@@ -318,9 +318,8 @@ export default class App extends Vue {
   }
 
   private savePageSet (): void {
-    console.warn('save Info: ', JSON.stringify(this.compList))
     this.$message({
-      message: '打开chomre devtool查看保存的信息！',
+      message: '打开chomre devtool localstroage查看保存的信息！',
       type: 'success'
     })
   }

@@ -39,7 +39,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
-import formItem from './formItem.vue'
+import formItem from '@/components/formItem.vue'
 
 @Component({
   name: 'AppPageOption',

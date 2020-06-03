@@ -165,7 +165,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
-import upload from './upload.vue'
+import upload from '@/components/upload.vue'
 
 @Component({
   name: 'FormItem',
@@ -206,7 +206,7 @@ export default class FormItem extends Vue {
   }
 
   private uploadSuccess (): void {
-    console.log('uploadSuccess')
+    this.$message.success('upload Success')
   }
 }
 </script>

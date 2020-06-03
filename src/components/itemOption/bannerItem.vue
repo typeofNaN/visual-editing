@@ -117,7 +117,7 @@ export default class BannerItem extends Vue {
   }
 
   private uploadSuccess (): void {
-    console.log('uploadSuccess')
+    this.$message.success('upload Success')
   }
 }
 </script>

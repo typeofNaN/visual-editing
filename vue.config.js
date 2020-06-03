@@ -26,6 +26,8 @@ module.exports = {
       rules: []
     }
   },
+  publicPath: process.env.NODE_ENV === 'production' ? '././' : './',
+  runtimeCompiler: true,
   chainWebpack: config => {
     config.module
       .rule('svg')
