@@ -2,6 +2,10 @@
 
 Visual Editing using @vue/cli3 and typescript build
 
+## Demo
+
+[demo](https://blog.typeofnan.com/Visual-Editing/dist)
+
 ## Project setup
 ```
 yarn install
