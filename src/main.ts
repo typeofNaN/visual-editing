@@ -8,17 +8,11 @@ import './icons/index'
 
 import './assets/style.scss'
 
-const evt = {
-  install (Vue: any) {
-    Vue.prototype.$evt = new Vue()
-  }
-}
-Vue.use(evt)
 Vue.use(H5Components)
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
-
+Vue.prototype.$evt = new Vue()
 
 new Vue({
   el: '#app',
