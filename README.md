@@ -4,7 +4,7 @@ Visual Editing using @vue/cli3 and typescript build
 
 ## Demo
 
-[demo](https://blog.typeofnan.com/visual-editing/index.html)
+[demo](https://blog.typeofnan.com/visual-editing)
 
 ## Project setup
 ```
