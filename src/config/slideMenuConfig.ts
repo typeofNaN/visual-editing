@@ -138,7 +138,7 @@ export default [
       }
     ]
   }, {
-    title: '动画效果',
+    title: '动画组件',
     collapse: false,
     items: [
       {
