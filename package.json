@@ -2,15 +2,18 @@
   "name": "visual-editing",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://typeofNaN.github.io/visual-editing",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "core-js": "^3.6.4",
     "element-ui": "^2.13.2",
+    "gh-pages": "^3.0.0",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.1"

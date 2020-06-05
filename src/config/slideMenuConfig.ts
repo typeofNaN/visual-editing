@@ -137,15 +137,15 @@ export default [
         icon: 'transverseList'
       }
     ]
-  // }, {
-  //   title: '动画效果',
-  //   collapse: false,
-  //   items: [
-  //     {
-  //       key: 'news-marquee',
-  //       text: '滚动新闻',
-  //       icon: 'roll'
-  //     }
-  //   ]
+  }, {
+    title: '动画效果',
+    collapse: false,
+    items: [
+      {
+        key: 'news-marquee',
+        text: '滚动新闻',
+        icon: 'roll'
+      }
+    ]
   }
 ]
