@@ -1,37 +1,54 @@
 # visual editing
 
-Visual Editing using @vue/cli3 and typescript build
+:factory: Mobile page visual editor, using Vue and typescript to build.
 
 ## Demo
 
-[demo](https://blog.typeofnan.com/visual-editing)
+[在线预览/Online preview](https://blog.typeofnan.com/visual-editing)
 
 ## Project setup
-```
-yarn install
+
+### Install
+
+``` bash
+yarn
 ```
 
 ### Compiles and hot-reloads for development
-```
+
+``` bash
 yarn serve
 ```
 
 ### Compiles and minifies for production
-```
+
+``` bash
 yarn build
 ```
 
 ### Run your unit tests
-```
+
+``` bash
 yarn test:unit
 ```
 
-### Lints and fixes files
+### Analyze
+
+``` bash
+yarn preview
 ```
+
+### Lints and fixes files
+
+``` bash
 yarn lint
 ```
 
-### Customize configuration
+## Continuous integration
+
+通过 Travis 持续集成，自动部署。Automatic deployment through **Travis** continuous integration.
+
+## Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## License
