@@ -4,7 +4,7 @@
 
 ## Demo
 
-[在线预览/Online preview](https://blog.typeofnan.com/visual-editing)
+[在线预览/Online preview](https://www.typeofnan.com/visual-editing)
 
 ## Project setup
 
