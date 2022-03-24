@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    id="timoutItem"
+    id="timeoutItem"
     title="配置倒计时"
     :close-on-click-modal="false"
     :append-to-body="false"
@@ -542,7 +542,7 @@ export default class TimeoutItem extends Vue {
 </script>
 
 <style lang="scss">
-#timoutItem {
+#timeoutItem {
   .el-dialog__body {
     padding: 0 10px 0 10px !important;
 

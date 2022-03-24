@@ -12,19 +12,19 @@
       </div>
       <div
         class="timeout-item day"
-        :style="dayStyl"
+        :style="dayStyle"
       >{{ countTime('day', component.action.config[0]) }}</div>
       <div
         class="timeout-item hour"
-        :style="hourStyl"
+        :style="hourStyle"
       >{{ countTime('hour', component.action.config[1]) }}</div>
       <div
         class="timeout-item minute"
-        :style="minuteStyl"
+        :style="minuteStyle"
       >{{ countTime('minute', component.action.config[2]) }}</div>
       <div
         class="timeout-item second"
-        :style="secondStyl"
+        :style="secondStyle"
       >{{ countTime('second', component.action.config[3]) }}</div>
     </div>
   </div>
@@ -41,10 +41,10 @@ export default class Timeout extends Vue {
   private component: any
 
 
-  private dayStyl: string = this.getTimeStyle(0)
-  private hourStyl: string = this.getTimeStyle(1)
-  private minuteStyl: string = this.getTimeStyle(2)
-  private secondStyl: string = this.getTimeStyle(3)
+  private dayStyle: string = this.getTimeStyle(0)
+  private hourStyle: string = this.getTimeStyle(1)
+  private minuteStyle: string = this.getTimeStyle(2)
+  private secondStyle: string = this.getTimeStyle(3)
   private imgUrl: string = this.component.style[1].val
 
   private get getStyle (): string {
@@ -64,10 +64,10 @@ export default class Timeout extends Vue {
 
   @Watch('component', { deep: true })
   private watchComponent (): void {
-    this.dayStyl = this.getTimeStyle(0)
-    this.hourStyl = this.getTimeStyle(1)
-    this.minuteStyl = this.getTimeStyle(2)
-    this.secondStyl = this.getTimeStyle(3)
+    this.dayStyle = this.getTimeStyle(0)
+    this.hourStyle = this.getTimeStyle(1)
+    this.minuteStyle = this.getTimeStyle(2)
+    this.secondStyle = this.getTimeStyle(3)
     this.imgUrl = this.component.style[1].val
   }
 
